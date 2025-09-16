@@ -1,0 +1,394 @@
+"use client";
+
+import React, { useState } from 'react';
+import { useQuery } from '@apollo/client/react';
+import Link from 'next/link';
+import { 
+  Brain, 
+  Star, 
+  Clock, 
+
+  Filter, 
+  Search,
+  Heart,
+  MessageCircle,
+  Calendar,
+  Users,
+
+  Languages
+} from 'lucide-react';
+import { GET_PSYCHOLOGIST_PROFILES } from '@/lib/graphql/queries';
+import { GetPsychologistProfilesResponse, PsychologistProfile } from '@/types/graphql';
+
+const PsychologistsPage = () => {
+  const [filters, setFilters] = useState({
+    specializations: [] as string[],
+    languages: [] as string[],
+    minExperience: 0,
+    maxHourlyRate: 1000,
+    isAcceptingNewClients: true,
+  });
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const { data, loading, error } = useQuery<GetPsychologistProfilesResponse>(GET_PSYCHOLOGIST_PROFILES, {
+    variables: {
+      filters: {
+        ...filters,
+        specializations: filters.specializations.length > 0 ? filters.specializations : undefined,
+        languages: filters.languages.length > 0 ? filters.languages : undefined,
+      },
+      limit: 20,
+      offset: 0,
+    },
+  });
+
+  const psychologists = data?.getPsychologistProfiles?.edges?.map((edge) => edge.node) || [];
+
+  const specializations = [
+    'CHILD_PSYCHOLOGY',
+    'ADOLESCENT_PSYCHOLOGY',
+    'FAMILY_THERAPY',
+    'COGNITIVE_BEHAVIORAL_THERAPY',
+    'TRAUMA_THERAPY',
+    'ANXIETY_DISORDERS',
+    'DEPRESSION',
+    'AUTISM_SPECTRUM',
+    'LEARNING_DISABILITIES',
+    'BEHAVIORAL_ISSUES',
+    'SOCIAL_SKILLS',
+    'EMOTIONAL_REGULATION',
+  ];
+
+  const languages = ['English', 'Spanish', 'French', 'German', 'Mandarin', 'Japanese'];
+
+  const handleSpecializationChange = (spec: string) => {
+    setFilters(prev => ({
+      ...prev,
+      specializations: prev.specializations.includes(spec)
+        ? prev.specializations.filter(s => s !== spec)
+        : [...prev.specializations, spec]
+    }));
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    setFilters(prev => ({
+      ...prev,
+      languages: prev.languages.includes(lang)
+        ? prev.languages.filter(l => l !== lang)
+        : [...prev.languages, lang]
+    }));
+  };
+
+  const formatSpecialization = (spec: string) => {
+    return spec.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
+  const getAvailabilityColor = (isAccepting: boolean) => {
+    return isAccepting ? 'text-green-600' : 'text-red-600';
+  };
+
+  const getAvailabilityText = (isAccepting: boolean) => {
+    return isAccepting ? 'Accepting New Clients' : 'Not Accepting New Clients';
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/dashboard" className="flex items-center">
+                <Brain className="h-8 w-8 text-blue-600" />
+                <span className="ml-2 text-xl font-bold text-gray-900">PsychConnect</span>
+              </Link>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/dashboard"
+                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Dashboard
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Find Your Perfect Psychologist 🌟
+          </h1>
+          <p className="text-gray-600">
+            Connect with qualified mental health professionals who specialize in child and family therapy
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Filters Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-8">
+              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                <Filter className="h-5 w-5 mr-2" />
+                Filters
+              </h2>
+
+              {/* Search */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Search
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Search psychologists..."
+                  />
+                </div>
+              </div>
+
+              {/* Specializations */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Specializations
+                </label>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {specializations.map((spec) => (
+                    <label key={spec} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={filters.specializations.includes(spec)}
+                        onChange={() => handleSpecializationChange(spec)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        {formatSpecialization(spec)}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Languages */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Languages
+                </label>
+                <div className="space-y-2">
+                  {languages.map((lang) => (
+                    <label key={lang} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={filters.languages.includes(lang)}
+                        onChange={() => handleLanguageChange(lang)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">{lang}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Experience */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Minimum Experience (years)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="50"
+                  value={filters.minExperience}
+                  onChange={(e) => setFilters(prev => ({ ...prev, minExperience: parseInt(e.target.value) || 0 }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Hourly Rate */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Max Hourly Rate ($)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  max="1000"
+                  value={filters.maxHourlyRate}
+                  onChange={(e) => setFilters(prev => ({ ...prev, maxHourlyRate: parseInt(e.target.value) || 1000 }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Availability */}
+              <div className="mb-6">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={filters.isAcceptingNewClients}
+                    onChange={(e) => setFilters(prev => ({ ...prev, isAcceptingNewClients: e.target.checked }))}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">Accepting New Clients</span>
+                </label>
+              </div>
+
+              {/* Clear Filters */}
+              <button
+                onClick={() => setFilters({
+                  specializations: [],
+                  languages: [],
+                  minExperience: 0,
+                  maxHourlyRate: 1000,
+                  isAcceptingNewClients: true,
+                })}
+                className="w-full text-sm text-gray-600 hover:text-gray-800 underline"
+              >
+                Clear All Filters
+              </button>
+            </div>
+          </div>
+
+          {/* Psychologists List */}
+          <div className="lg:col-span-3">
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              </div>
+            ) : error ? (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                Error loading psychologists: {error.message}
+              </div>
+            ) : psychologists.length === 0 ? (
+              <div className="text-center py-12">
+                <Brain className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No psychologists found</h3>
+                <p className="text-gray-600">Try adjusting your filters to see more results.</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {psychologists.map((psychologist: PsychologistProfile) => (
+                  <div key={psychologist._id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-start space-x-6">
+                      {/* Profile Image */}
+                      <div className="flex-shrink-0">
+                        <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                          <span className="text-white text-2xl font-bold">
+                            {psychologist.user.fullName.charAt(0)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Profile Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-1">
+                              {psychologist.user.fullName}
+                            </h3>
+                            <p className="text-gray-600 mb-2">@{psychologist.user.userName}</p>
+                            
+                            {/* Specializations */}
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {psychologist.specializations.slice(0, 3).map((spec: string) => (
+                                <span
+                                  key={spec}
+                                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                                >
+                                  {formatSpecialization(spec)}
+                                </span>
+                              ))}
+                              {psychologist.specializations.length > 3 && (
+                                <span className="text-xs text-gray-500">
+                                  +{psychologist.specializations.length - 3} more
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Bio */}
+                            <p className="text-gray-700 mb-4 line-clamp-2">
+                              {psychologist.bio}
+                            </p>
+
+                            {/* Stats */}
+                            <div className="flex items-center space-x-6 text-sm text-gray-600">
+                              <div className="flex items-center">
+                                <Clock className="h-4 w-4 mr-1" />
+                                {psychologist.experience} years experience
+                              </div>
+                              <div className="flex items-center">
+                                <Star className="h-4 w-4 mr-1 text-yellow-500" />
+                                {psychologist.averageRating ? psychologist.averageRating.toFixed(1) : 'New'}
+                              </div>
+                              <div className="flex items-center">
+                                <Users className="h-4 w-4 mr-1" />
+                                {psychologist.totalClients} clients
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right Side */}
+                          <div className="text-right">
+                            <div className="mb-2">
+                              <span className="text-2xl font-bold text-gray-900">
+                                ${psychologist.hourlyRate}
+                              </span>
+                              <span className="text-gray-600">/hour</span>
+                            </div>
+                            
+                            <div className={`text-sm font-medium ${getAvailabilityColor(psychologist.isAcceptingNewClients)}`}>
+                              {getAvailabilityText(psychologist.isAcceptingNewClients)}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Languages */}
+                        {psychologist.languages && psychologist.languages.length > 0 && (
+                          <div className="mt-4 flex items-center">
+                            <Languages className="h-4 w-4 text-gray-400 mr-2" />
+                            <span className="text-sm text-gray-600">
+                              Languages: {psychologist.languages.join(', ')}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Action Buttons */}
+                        <div className="mt-6 flex items-center space-x-3">
+                          <Link
+                            href={`/psychologists/${psychologist._id}`}
+                            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          >
+                            <Heart className="h-4 w-4 mr-2" />
+                            View Profile
+                          </Link>
+                          <Link
+                            href={`/appointments/new?psychologistId=${psychologist._id}`}
+                            className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                          >
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Book Session
+                          </Link>
+                          <button className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Message
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PsychologistsPage;
