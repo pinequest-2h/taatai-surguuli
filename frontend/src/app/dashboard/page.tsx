@@ -1,35 +1,36 @@
 "use client";
 
-import React, { useEffect } from 'react';
-import { useQuery } from '@apollo/client/react';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
-import { 
-  Brain, 
-  MessageCircle, 
-  Users, 
+import React, { useEffect } from "react";
+import { useQuery } from "@apollo/client/react";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import {
+  Brain,
+  MessageCircle,
+  Users,
   Plus,
   Settings,
   Bell,
   ArrowRight,
-  Clock
-} from 'lucide-react';
-import { GET_CHATROOMS } from '@/lib/graphql/queries';
-import { GetChatroomsResponse, Chatroom } from '@/types/graphql';
-import Link from 'next/link';
+  Clock,
+} from "lucide-react";
+import { GET_CHATROOMS } from "@/lib/graphql/queries";
+import { GetChatroomsResponse, Chatroom } from "@/types/graphql";
+import Link from "next/link";
 
 const DashboardPage = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
-  const { data: chatroomsData, loading: chatroomsLoading } = useQuery<GetChatroomsResponse>(GET_CHATROOMS, {
-    variables: { userId: user?._id },
-    skip: !user?._id,
-  });
+  const { data: chatroomsData, loading: chatroomsLoading } =
+    useQuery<GetChatroomsResponse>(GET_CHATROOMS, {
+      variables: { userId: user?._id },
+      skip: !user?._id,
+    });
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/signin');
+      router.push("/signin");
     }
   }, [isAuthenticated, isLoading, router, user]);
 
@@ -50,7 +51,7 @@ const DashboardPage = () => {
   const recentChatrooms = chatrooms.slice(0, 3);
 
   const getOtherParticipant = (chatroom: Chatroom) => {
-    if (user.role === 'CHILD') {
+    if (user.role === "CHILD") {
       return chatroom.psychologist;
     } else {
       return chatroom.child;
@@ -61,9 +62,9 @@ const DashboardPage = () => {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
-    
+
     if (diffInHours < 1) {
-      return 'Саяхан';
+      return "Саяхан";
     } else if (diffInHours < 24) {
       return `${Math.floor(diffInHours)} цаг өмнө`;
     } else {
@@ -79,7 +80,9 @@ const DashboardPage = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Brain className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">Сэтгэл Сэтгэлгээ</span>
+              <span className="ml-2 text-xl font-bold text-gray-900">
+                Эрүүл сэтгэлгээ
+              </span>
             </div>
             <div className="flex items-center space-x-4">
               <Link
@@ -107,10 +110,9 @@ const DashboardPage = () => {
             Тавтай морил, {user.fullName}!
           </h1>
           <p className="text-gray-600">
-            {user.role === 'CHILD' 
-              ? 'Сэтгэл судлаачтай холбогдож, дэмжлэг аваарай'
-              : 'Хүүхдүүд болон гэр бүлүүдтэй холбогдоорой'
-            }
+            {user.role === "CHILD"
+              ? "Сэтгэл судлаачтай холбогдож, дэмжлэг аваарай"
+              : "Хүүхдүүд болон гэр бүлүүдтэй холбогдоорой"}
           </p>
         </div>
 
@@ -126,13 +128,14 @@ const DashboardPage = () => {
               </div>
               <div className="ml-4">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  {user.role === 'CHILD' ? 'Сэтгэл судлаач олох' : 'Хүүхдүүдтэй холбогдох'}
+                  {user.role === "CHILD"
+                    ? "Сэтгэл судлаач олох"
+                    : "Хүүхдүүдтэй холбогдох"}
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  {user.role === 'CHILD' 
-                    ? 'Мэргэжлийн дэмжлэг авах'
-                    : 'Хүүхдүүдтэй харилцах'
-                  }
+                  {user.role === "CHILD"
+                    ? "Мэргэжлийн дэмжлэг авах"
+                    : "Хүүхдүүдтэй харилцах"}
                 </p>
               </div>
             </div>
@@ -165,9 +168,7 @@ const DashboardPage = () => {
               </div>
               <div className="ml-4">
                 <h3 className="text-lg font-semibold text-gray-900">Профайл</h3>
-                <p className="text-gray-600 text-sm">
-                  Хувийн мэдээлэл засах
-                </p>
+                <p className="text-gray-600 text-sm">Хувийн мэдээлэл засах</p>
               </div>
             </div>
           </Link>
@@ -177,7 +178,9 @@ const DashboardPage = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Сүүлийн харилцан яриа</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Сүүлийн харилцан яриа
+              </h2>
               <Link
                 href="/chatrooms"
                 className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center"
@@ -205,27 +208,31 @@ const DashboardPage = () => {
                     >
                       <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                         <span className="text-white font-bold">
-                          {otherParticipant?.fullName?.charAt(0) || '?'}
+                          {otherParticipant?.fullName?.charAt(0) || "?"}
                         </span>
                       </div>
                       <div className="ml-4 flex-1">
                         <div className="flex items-center justify-between">
                           <h3 className="font-medium text-gray-900">
-                            {otherParticipant?.fullName || 'Unknown User'}
+                            {otherParticipant?.fullName || "Unknown User"}
                           </h3>
                           <span className="text-sm text-gray-500">
-                            {chatroom.lastMessageAt ? formatTime(chatroom.lastMessageAt) : 'Шинэ'}
+                            {chatroom.lastMessageAt
+                              ? formatTime(chatroom.lastMessageAt)
+                              : "Шинэ"}
                           </span>
                         </div>
                         <p className="text-sm text-gray-600 mt-1">
-                          {chatroom.lastMessage?.content || 'Харилцан яриа эхлүүлэх'}
+                          {chatroom.lastMessage?.content ||
+                            "Харилцан яриа эхлүүлэх"}
                         </p>
                       </div>
-                      {chatroom.unreadCount && chatroom.unreadCount[user.role.toLowerCase()] > 0 && (
-                        <div className="bg-blue-600 text-white text-xs rounded-full px-2 py-1 ml-2">
-                          {chatroom.unreadCount[user.role.toLowerCase()]}
-                        </div>
-                      )}
+                      {chatroom.unreadCount &&
+                        chatroom.unreadCount[user.role.toLowerCase()] > 0 && (
+                          <div className="bg-blue-600 text-white text-xs rounded-full px-2 py-1 ml-2">
+                            {chatroom.unreadCount[user.role.toLowerCase()]}
+                          </div>
+                        )}
                     </Link>
                   );
                 })}
@@ -237,17 +244,18 @@ const DashboardPage = () => {
                   Хараахан харилцан яриа байхгүй байна
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  {user.role === 'CHILD' 
-                    ? 'Сэтгэл судлаачтай холбогдож эхлээрэй'
-                    : 'Хүүхдүүдтэй холбогдож эхлээрэй'
-                  }
+                  {user.role === "CHILD"
+                    ? "Сэтгэл судлаачтай холбогдож эхлээрэй"
+                    : "Хүүхдүүдтэй холбогдож эхлээрэй"}
                 </p>
                 <Link
                   href="/psychologists"
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium inline-flex items-center"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  {user.role === 'CHILD' ? 'Сэтгэл судлаач олох' : 'Хүүхдүүдтэй холбогдох'}
+                  {user.role === "CHILD"
+                    ? "Сэтгэл судлаач олох"
+                    : "Хүүхдүүдтэй холбогдох"}
                 </Link>
               </div>
             )}
@@ -262,8 +270,12 @@ const DashboardPage = () => {
                 <MessageCircle className="h-6 w-6 text-blue-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Нийт харилцан яриа</p>
-                <p className="text-2xl font-bold text-gray-900">{chatrooms.length}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Нийт харилцан яриа
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {chatrooms.length}
+                </p>
               </div>
             </div>
           </div>
@@ -274,7 +286,9 @@ const DashboardPage = () => {
                 <Clock className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Идэвхтэй харилцан яриа</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Идэвхтэй харилцан яриа
+                </p>
                 <p className="text-2xl font-bold text-gray-900">
                   {chatrooms.filter((c: Chatroom) => c.isActive).length}
                 </p>
@@ -288,9 +302,15 @@ const DashboardPage = () => {
                 <Bell className="h-6 w-6 text-purple-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Уншаагүй зурвас</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Уншаагүй зурвас
+                </p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {chatrooms.reduce((total: number, c: Chatroom) => total + (c.unreadCount?.[user.role.toLowerCase()] || 0), 0)}
+                  {chatrooms.reduce(
+                    (total: number, c: Chatroom) =>
+                      total + (c.unreadCount?.[user.role.toLowerCase()] || 0),
+                    0
+                  )}
                 </p>
               </div>
             </div>
