@@ -71,7 +71,7 @@ const SignUpPage = () => {
       });
 
       if (data?.createUser) {
-        // After successful registration, redirect to sign in
+
         router.push('/signin?message=Registration successful! Please sign in.');
       }
     } catch (err: unknown) {
