@@ -87,7 +87,7 @@ const DashboardPage = () => {
             <div className="flex items-center space-x-4">
               <Link
                 href="/chatrooms"
-                className="text-gray-600 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+                className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium flex items-center"
               >
                 <MessageCircle className="h-4 w-4 mr-1" />
                 Бүх зурвас
