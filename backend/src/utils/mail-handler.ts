@@ -1,7 +1,10 @@
 import nodemailer from 'nodemailer';
 import { GraphQLError } from 'graphql';
 
-const transporter = nodemailer.createTransport({
+// Check if email is properly configured
+const isEmailConfigured = process.env.SMTP_USER && process.env.SMTP_PASS;
+
+const transporter = isEmailConfigured ? nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
   secure: false,
@@ -9,9 +12,15 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-});
+}) : null;
 
 export const sendOTPEmail = async (email: string, otp: string): Promise<void> => {
+  // Skip email sending if not configured
+  if (!isEmailConfigured) {
+    console.log(`⚠️ Email not configured - OTP for ${email}: ${otp}`);
+    return;
+  }
+
   try {
     const mailOptions = {
       from: process.env.SMTP_FROM || 'noreply@instagram.com',
@@ -48,7 +57,7 @@ export const sendOTPEmail = async (email: string, otp: string): Promise<void> =>
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    await transporter!.sendMail(mailOptions);
     console.log(`OTP email sent to ${email}`);
   } catch (error) {
     console.error('Error sending OTP email:', error);
@@ -62,6 +71,12 @@ export const sendOTPEmail = async (email: string, otp: string): Promise<void> =>
 };
 
 export const sendVerificationEmail = async (email: string, otp: string): Promise<void> => {
+  // Skip email sending if not configured
+  if (!isEmailConfigured) {
+    console.log(`⚠️ Email not configured - Verification OTP for ${email}: ${otp}`);
+    return;
+  }
+
   try {
     const mailOptions = {
       from: process.env.SMTP_FROM || 'noreply@instagram.com',
@@ -98,7 +113,7 @@ export const sendVerificationEmail = async (email: string, otp: string): Promise
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    await transporter!.sendMail(mailOptions);
     console.log(`Verification email sent to ${email}`);
   } catch (error) {
     console.error('Error sending verification email:', error);

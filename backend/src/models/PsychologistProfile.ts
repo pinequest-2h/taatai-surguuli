@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
 export interface IPsychologistProfile extends Document {
   user: Schema.Types.ObjectId;
@@ -215,4 +215,4 @@ const PsychologistProfileSchema = new Schema<IPsychologistProfile>({
   timestamps: true
 });
 
-export const PsychologistProfile = model<IPsychologistProfile>('PsychologistProfile', PsychologistProfileSchema);
+export const PsychologistProfile = models.PsychologistProfile || model<IPsychologistProfile>('PsychologistProfile', PsychologistProfileSchema);

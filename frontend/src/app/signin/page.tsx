@@ -77,10 +77,10 @@ const SignInPage = () => {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome Back! 🌟
+            Тавтай морил! 🌟
           </h1>
           <p className="text-gray-600">
-            Sign in to continue your mental health journey
+            Сэтгэл зүйн эрүүл мэндийн аялалаа үргэлжлүүлэхийн тулд нэвтэрнэ үү
           </p>
         </div>
 
@@ -95,7 +95,7 @@ const SignInPage = () => {
 
             <div>
               <label htmlFor="identifier" className="block text-sm font-medium text-gray-700 mb-2">
-                Email or Username
+                И-мэйл эсвэл хэрэглэгчийн нэр
               </label>
               <input
                 type="text"
@@ -105,13 +105,13 @@ const SignInPage = () => {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="Enter your email or username"
+                placeholder="И-мэйл эсвэл хэрэглэгчийн нэрээ оруулна уу"
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                Нууц үг
               </label>
               <div className="relative">
                 <input
@@ -122,7 +122,7 @@ const SignInPage = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Enter your password"
+                  placeholder="Нууц үгээ оруулна уу"
                 />
                 <button
                   type="button"
@@ -142,19 +142,19 @@ const SignInPage = () => {
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Signing In...
+                  Нэвтэрч байна...
                 </div>
               ) : (
-                'Sign In'
+                'Нэвтрэх'
               )}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don&apos;t have an account?{' '}
+              Бүртгэл байхгүй юу?{' '}
               <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                Sign up here
+                Энд бүртгүүлнэ үү
               </Link>
             </p>
           </div>
@@ -166,7 +166,7 @@ const SignInPage = () => {
             <div className="flex items-center">
               <Heart className="h-5 w-5 text-pink-500 mr-3" />
               <span className="text-sm text-gray-700">
-                Safe and secure platform for mental health support
+                Сэтгэл зүйн дэмжлэгийн аюулгүй, найдвартай платформ
               </span>
             </div>
           </div>

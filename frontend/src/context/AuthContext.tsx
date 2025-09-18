@@ -7,9 +7,14 @@ interface User {
   fullName: string;
   userName: string;
   email?: string;
+  phoneNumber?: string;
+  bio?: string;
+  gender?: 'FEMALE' | 'MALE' | 'OTHER';
   role: 'CHILD' | 'PSYCHOLOGIST' | 'ADMIN';
   isVerified: boolean;
+  isPrivate: boolean;
   profileImage?: string;
+  createdAt?: string;
 }
 
 interface AuthContextType {
@@ -41,17 +46,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored auth data on mount
+
     const storedToken = localStorage.getItem('auth_token');
     const storedUser = localStorage.getItem('auth_user');
 
     if (storedToken && storedUser) {
       try {
+        const parsedUser = JSON.parse(storedUser);
         setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        setUser(parsedUser);
       } catch (error) {
         console.error('Error parsing stored user data:', error);
-        // Clear invalid data
         localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
       }

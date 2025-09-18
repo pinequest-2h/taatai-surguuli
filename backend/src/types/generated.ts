@@ -32,9 +32,20 @@ export interface CreatePsychologistInput {
 }
 
 export interface UpdateUserInput {
-  id: string;
-  name?: string;
+  fullName?: string;
+  userName?: string;
   email?: string;
+  phoneNumber?: string;
+  bio?: string;
+  profileImage?: string;
+  gender?: "FEMALE" | "MALE" | "OTHER";
+  role?: "CHILD" | "PSYCHOLOGIST" | "ADMIN";
+  isPrivate?: boolean;
+}
+
+export interface LoginInput {
+  identifier: string;
+  password: string;
 }
 
 export interface UserConnection {

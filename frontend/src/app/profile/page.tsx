@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   User, 
   Mail, 
   Phone, 
-  MapPin, 
-  Calendar, 
   Edit, 
   Save, 
   X,
@@ -17,14 +16,49 @@ import {
   Camera,
   Shield,
   Heart,
-  Settings
+  LogOut
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { GET_USER_BY_ID } from '@/lib/graphql/queries';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
 
+interface GetUserByIdResponse {
+  getUserById?: {
+    _id: string;
+    fullName: string;
+    userName: string;
+    email?: string;
+    phoneNumber?: string;
+    bio?: string;
+    gender: 'FEMALE' | 'MALE' | 'OTHER';
+    role: 'CHILD' | 'PSYCHOLOGIST' | 'ADMIN';
+    isVerified: boolean;
+    isPrivate: boolean;
+    profileImage?: string;
+    createdAt?: string;
+  };
+}
+
+interface UpdateUserResponse {
+  updateUser?: {
+    _id: string;
+    fullName: string;
+    userName: string;
+    email?: string;
+    phoneNumber?: string;
+    bio?: string;
+    gender: 'FEMALE' | 'MALE' | 'OTHER';
+    role: 'CHILD' | 'PSYCHOLOGIST' | 'ADMIN';
+    isVerified: boolean;
+    isPrivate: boolean;
+    profileImage?: string;
+    createdAt?: string;
+  };
+}
+
 const ProfilePage = () => {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, logout, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -35,14 +69,14 @@ const ProfilePage = () => {
     gender: 'OTHER' as 'FEMALE' | 'MALE' | 'OTHER',
   });
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data, loading } = useQuery(GET_USER_BY_ID, {
+  const { data, loading } = useQuery<GetUserByIdResponse>(GET_USER_BY_ID, {
     variables: { _id: currentUser?._id },
     skip: !currentUser?._id,
   });
 
-  const [updateUser] = useMutation(UPDATE_USER);
+  const [updateUser] = useMutation<UpdateUserResponse>(UPDATE_USER);
 
   const user = data?.getUserById || currentUser;
 
@@ -59,10 +93,37 @@ const ProfilePage = () => {
     }
   }, [user]);
 
+  // Authentication guard
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/signin');
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  // Handle logout with redirect
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
+
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
       const { data: updateData } = await updateUser({
@@ -84,10 +145,10 @@ const ProfilePage = () => {
         // Update the auth context with new user data
         // This would typically be handled by refetching the user data
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to update profile. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to update profile. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -413,15 +474,15 @@ const ProfilePage = () => {
                   <div className="flex justify-end pt-6 border-t border-gray-200">
                     <button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isSubmitting}
                       className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      {isLoading ? (
+                      {isSubmitting ? (
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                       ) : (
                         <Save className="h-5 w-5 mr-2" />
                       )}
-                      {isLoading ? 'Saving...' : 'Save Changes'}
+                      {isSubmitting ? 'Saving...' : 'Save Changes'}
                     </button>
                   </div>
                 )}
@@ -444,16 +505,18 @@ const ProfilePage = () => {
                     </div>
                   </Link>
                 )}
-                <Link
-                  href="/settings"
+                <div
+                  
                   className="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                 >
-                  <Settings className="h-5 w-5 mr-3 text-gray-600" />
+
                   <div>
-                    <div className="font-medium">Account Settings</div>
-                    <div className="text-sm text-gray-600">Privacy, security, and preferences</div>
+                   <button onClick={handleLogout} className="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                    <LogOut className="h-5 w-5 mr-3 text-gray-600" />
+                    Logout
+                   </button>
                   </div>
-                </Link>
+                </div>
               </div>
             </div>
           </div>

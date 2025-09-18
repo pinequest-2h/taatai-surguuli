@@ -1,15 +1,14 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/client/react';
-import { useParams } from 'next/navigation';
+import { useQuery, useMutation } from '@apollo/client/react';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Brain, 
   Star, 
   Clock, 
   MessageCircle,
-  Calendar,
   Award,
   Languages,
   ArrowLeft,
@@ -18,17 +17,88 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { GET_PSYCHOLOGIST_PROFILE } from '@/lib/graphql/queries';
+import { CREATE_CHATROOM } from '@/lib/graphql/mutations';
 import { GetPsychologistProfileResponse } from '@/types/graphql';
+import { useAuth } from '@/context/AuthContext';
+
+interface CreateChatroomResponse {
+  createChatroom?: {
+    _id: string;
+    child: {
+      _id: string;
+      fullName: string;
+      userName: string;
+      profileImage?: string;
+    };
+    psychologist: {
+      _id: string;
+      fullName: string;
+      userName: string;
+      profileImage?: string;
+    };
+    isActive: boolean;
+    unreadCount: {
+      child: number;
+      psychologist: number;
+    };
+    createdAt: string;
+    updatedAt: string;
+  };
+}
 
 const PsychologistProfilePage = () => {
   const params = useParams();
+  const router = useRouter();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [isCreatingChatroom, setIsCreatingChatroom] = useState(false);
+  const [chatroomError, setChatroomError] = useState('');
 
   const { data, loading, error } = useQuery<GetPsychologistProfileResponse>(GET_PSYCHOLOGIST_PROFILE, {
     variables: { _id: params.id },
   });
 
+  const [createChatroom] = useMutation<CreateChatroomResponse>(CREATE_CHATROOM);
+
   const psychologist = data?.getPsychologistProfile;
+
+  const handleSendMessage = async () => {
+    if (!user || user.role !== 'CHILD' || !psychologist) return;
+    
+    setIsCreatingChatroom(true);
+    setChatroomError('');
+    try {
+      const { data: chatroomData } = await createChatroom({
+        variables: {
+          input: {
+            childId: user._id,
+            psychologistId: psychologist.user._id,
+          },
+        },
+      });
+      
+      if (chatroomData?.createChatroom) {
+        router.push(`/chatroom/${chatroomData.createChatroom._id}`);
+      } else {
+        setChatroomError('Failed to create chatroom. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error creating chatroom:', error);
+      if (error instanceof Error) {
+        if (error.message.includes('Authentication required')) {
+          setChatroomError('Please sign in to start a conversation.');
+        } else if (error.message.includes('Not authorized')) {
+          setChatroomError('You are not authorized to create this chatroom.');
+        } else {
+          setChatroomError('Failed to create chatroom. Please try again.');
+        }
+      } else {
+        setChatroomError('An unexpected error occurred. Please try again.');
+      }
+    } finally {
+      setIsCreatingChatroom(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -121,7 +191,7 @@ const PsychologistProfilePage = () => {
               </div>
             </div>
 
-            {/* Profile Info */}
+
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between">
                 <div>
@@ -177,17 +247,20 @@ const PsychologistProfilePage = () => {
                   </div>
                   
                   <div className="space-y-3">
-                    <Link
-                      href={`/appointments/new?psychologistId=${psychologist._id}`}
-                      className="block w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors text-center font-medium"
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={isCreatingChatroom}
+                      className="block w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-center font-medium"
                     >
-                      <Calendar className="h-5 w-5 inline mr-2" />
-                      Book Session
-                    </Link>
-                    <button className="block w-full border border-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                       <MessageCircle className="h-5 w-5 inline mr-2" />
-                      Send Message
+                      {isCreatingChatroom ? 'Харилцаа үүсгэж байна...' : 'Зурвас илгээх'}
                     </button>
+                    
+                    {chatroomError && (
+                      <div className="text-red-600 text-sm text-center p-2 bg-red-50 rounded-lg">
+                        {chatroomError}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

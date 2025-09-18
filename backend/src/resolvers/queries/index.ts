@@ -1,8 +1,7 @@
 import { getPsychologists, getPsychologistById, searchPsychologists } from "./psychologist/get-psychologists";
 import { getPsychologistProfile, getPsychologistProfiles, getAvailablePsychologists } from "./psychologist/get-psychologist-profile";
 import { getUserById } from "./user/get-user-by-id";
-import { getUpcomingAppointments } from "./appointment/get-upcoming-appointments";
-import { getAppointments, getPsychologistAppointments, getChildAppointments } from "./appointment/get-appointments";
+import { getChatrooms, getChatroomById, getChatroomMessages, getOrCreateChatroom } from "./chatroom/get-chatrooms";
 
 export const Query = {
   hello: () => "Hello from GraphQL!",
@@ -13,8 +12,8 @@ export const Query = {
   getPsychologistProfile,
   getPsychologistProfiles,
   getAvailablePsychologists,
-  getUpcomingAppointments,
-  getAppointments,
-  getPsychologistAppointments,
-  getChildAppointments,
+  getChatrooms,
+  getChatroomById,
+  getChatroomMessages,
+  getOrCreateChatroom,
 };

@@ -103,10 +103,10 @@ const SignUpPage = () => {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Join Our Community! 🎉
+            Манай нийгэмлэгт нэгдээрэй! 🎉
           </h1>
           <p className="text-gray-600">
-            Start your mental health journey with us today
+            Өнөөдөр бидэнтэй хамт сэтгэл зүйн эрүүл мэндийн аялалаа эхлүүлээрэй
           </p>
         </div>
 
@@ -122,7 +122,7 @@ const SignUpPage = () => {
             {/* Role Selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                I am a: (Current: {formData.role})
+                Би бол: (Одоогийн: {formData.role})
               </label>
               <div className="grid grid-cols-2 gap-4">
                 <label className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
@@ -140,7 +140,7 @@ const SignUpPage = () => {
                   />
                   <div className="flex items-center">
                     <User className="h-5 w-5 mr-2 text-blue-600" />
-                    <span className="font-medium">Child/Family</span>
+                    <span className="font-medium">Хүүхэд/Гэр бүл</span>
                   </div>
                 </label>
                 <label className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
@@ -158,7 +158,7 @@ const SignUpPage = () => {
                   />
                   <div className="flex items-center">
                     <Brain className="h-5 w-5 mr-2 text-purple-600" />
-                    <span className="font-medium">Psychologist</span>
+                    <span className="font-medium">Сэтгэл судлаач</span>
                   </div>
                 </label>
               </div>
@@ -168,7 +168,7 @@ const SignUpPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
+                  Бүтэн нэр *
                 </label>
                 <input
                   type="text"
@@ -178,13 +178,13 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Enter your full name"
+                  placeholder="Бүтэн нэрээ оруулна уу"
                 />
               </div>
 
               <div>
                 <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Username *
+                  Хэрэглэгчийн нэр *
                 </label>
                 <input
                   type="text"
@@ -194,7 +194,7 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Choose a username"
+                  placeholder="Хэрэглэгчийн нэр сонгоно уу"
                 />
               </div>
             </div>
@@ -202,7 +202,7 @@ const SignUpPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
+                  И-мэйл
                 </label>
                 <input
                   type="email"
@@ -211,13 +211,13 @@ const SignUpPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Enter your email"
+                  placeholder="И-мэйлээ оруулна уу"
                 />
               </div>
 
               <div>
                 <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number
+                  Утасны дугаар
                 </label>
                 <input
                   type="tel"
@@ -226,14 +226,14 @@ const SignUpPage = () => {
                   value={formData.phoneNumber}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Enter your phone number"
+                  placeholder="Утасны дугаараа оруулна уу"
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
-                Gender *
+                Хүйс *
               </label>
               <select
                 id="gender"
@@ -243,15 +243,15 @@ const SignUpPage = () => {
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
               >
-                <option value="OTHER">Prefer not to say</option>
-                <option value="FEMALE">Female</option>
-                <option value="MALE">Male</option>
+                <option value="OTHER">Хэлэхгүй байх</option>
+                <option value="FEMALE">Эмэгтэй</option>
+                <option value="MALE">Эрэгтэй</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
-                Bio
+                Товч танилцуулга
               </label>
               <textarea
                 id="bio"
@@ -260,7 +260,7 @@ const SignUpPage = () => {
                 onChange={handleChange}
                 rows={3}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="Tell us a little about yourself..."
+                placeholder="Өөрийнхөө тухай бага зүйл хэлээрэй..."
               />
             </div>
 
@@ -268,7 +268,7 @@ const SignUpPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password *
+                  Нууц үг *
                 </label>
                 <div className="relative">
                   <input
@@ -279,7 +279,7 @@ const SignUpPage = () => {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="Create a password"
+                    placeholder="Нууц үг үүсгэнэ үү"
                   />
                   <button
                     type="button"
@@ -293,7 +293,7 @@ const SignUpPage = () => {
 
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Password *
+                  Нууц үг баталгаажуулах *
                 </label>
                 <div className="relative">
                   <input
@@ -304,7 +304,7 @@ const SignUpPage = () => {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                    placeholder="Confirm your password"
+                    placeholder="Нууц үгээ баталгаажуулна уу"
                   />
                   <button
                     type="button"
@@ -325,19 +325,19 @@ const SignUpPage = () => {
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Creating Account...
+                  Бүртгэл үүсгэж байна...
                 </div>
               ) : (
-                'Create Account'
+                'Бүртгэл үүсгэх'
               )}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
+              Бүртгэл аль хэдийн байна уу?{' '}
               <Link href="/signin" className="text-blue-600 hover:text-blue-700 font-medium">
-                Sign in here
+                Энд нэвтрэнэ үү
               </Link>
             </p>
           </div>
@@ -349,7 +349,7 @@ const SignUpPage = () => {
             <div className="flex items-center">
               <Heart className="h-5 w-5 text-pink-500 mr-3" />
               <span className="text-sm text-gray-700">
-                Join a supportive community focused on mental health and well-being
+                Сэтгэл зүйн эрүүл мэнд болон сайн сайхан байдлыг төлөвшүүлэх дэмжлэгтэй нийгэмлэгт нэгдээрэй
               </span>
             </div>
           </div>

@@ -1,7 +1,6 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
 export interface ISession extends Document {
-  appointment: Schema.Types.ObjectId;
   psychologist: Schema.Types.ObjectId;
   child: Schema.Types.ObjectId;
   startTime: Date;
@@ -18,11 +17,6 @@ export interface ISession extends Document {
 }
 
 const SessionSchema = new Schema<ISession>({
-  appointment: {
-    type: Schema.Types.ObjectId,
-    ref: 'Appointment',
-    required: true
-  },
   psychologist: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -79,4 +73,4 @@ SessionSchema.index({ psychologist: 1, startTime: 1 });
 SessionSchema.index({ child: 1, startTime: 1 });
 SessionSchema.index({ status: 1, startTime: 1 });
 
-export const Session = model<ISession>('Session', SessionSchema);
+export const Session = models.Session || model<ISession>('Session', SessionSchema);

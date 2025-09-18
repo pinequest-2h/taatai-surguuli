@@ -18,7 +18,6 @@ export const sessionTypeDefs = gql`
 
   type Session {
     _id: ID!
-    appointment: Appointment!
     psychologist: User!
     child: User!
     type: SessionType!
@@ -47,7 +46,8 @@ export const sessionTypeDefs = gql`
   }
 
   input CreateSessionInput {
-    appointmentId: ID!
+    psychologistId: ID!
+    childId: ID!
     type: SessionType!
     goals: [String!]!
     notes: String

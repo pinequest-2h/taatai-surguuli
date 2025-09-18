@@ -24,6 +24,7 @@ export const LOGIN_USER = gql`
         email
         role
         isVerified
+        isPrivate
         profileImage
       }
       token
@@ -43,8 +44,65 @@ export const UPDATE_USER = gql`
       gender
       role
       isVerified
+      isPrivate
       bio
     }
+  }
+`;
+
+// Chatroom Mutations
+export const CREATE_CHATROOM = gql`
+  mutation CreateChatroom($input: CreateChatroomInput!) {
+    createChatroom(input: $input) {
+      _id
+      child {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      psychologist {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      isActive
+      unreadCount {
+        child
+        psychologist
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const SEND_CHATROOM_MESSAGE = gql`
+  mutation SendChatroomMessage($input: SendChatroomMessageInput!) {
+    sendChatroomMessage(input: $input) {
+      _id
+      chatroom {
+        _id
+      }
+      sender {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      content
+      type
+      isRead
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const MARK_CHATROOM_MESSAGES_AS_READ = gql`
+  mutation MarkChatroomMessagesAsRead($chatroomId: ID!, $userId: ID!) {
+    markChatroomMessagesAsRead(chatroomId: $chatroomId, userId: $userId)
   }
 `;
 
@@ -84,67 +142,6 @@ export const UPDATE_PSYCHOLOGIST_PROFILE = gql`
       hourlyRate
       bio
       isAcceptingNewClients
-    }
-  }
-`;
-
-// Appointment Mutations
-export const CREATE_APPOINTMENT = gql`
-  mutation CreateAppointment($input: CreateAppointmentInput!) {
-    createAppointment(input: $input) {
-      _id
-      psychologist {
-        _id
-        fullName
-        userName
-      }
-      child {
-        _id
-        fullName
-        userName
-      }
-      scheduledDate
-      duration
-      type
-      status
-      notes
-      location
-      isOnline
-      meetingLink
-    }
-  }
-`;
-
-export const UPDATE_APPOINTMENT = gql`
-  mutation UpdateAppointment($_id: ID!, $input: UpdateAppointmentInput!) {
-    updateAppointment(_id: $_id, input: $input) {
-      _id
-      scheduledDate
-      duration
-      type
-      status
-      notes
-      location
-      isOnline
-      meetingLink
-    }
-  }
-`;
-
-export const CANCEL_APPOINTMENT = gql`
-  mutation CancelAppointment($_id: ID!, $reason: String) {
-    cancelAppointment(_id: $_id, reason: $reason) {
-      _id
-      status
-    }
-  }
-`;
-
-export const CONFIRM_APPOINTMENT = gql`
-  mutation ConfirmAppointment($_id: ID!) {
-    confirmAppointment(_id: $_id) {
-      _id
-      status
     }
   }
 `;

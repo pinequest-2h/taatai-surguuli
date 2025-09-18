@@ -165,7 +165,6 @@ export const psychologistTypeDefs = gql`
     totalEarnings: Float!
     thisMonthSessions: Int!
     thisMonthEarnings: Float!
-    upcomingAppointments: Int!
     completedSessions: Int!
   }
 `;

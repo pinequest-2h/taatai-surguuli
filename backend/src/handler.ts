@@ -7,7 +7,6 @@ import { connectToDb } from "./database/connect-to-db";
 import { Context } from "./types/context";
 import { extractTokenFromHeader, verifyToken } from "./utils/jwt";
 
-
 console.log("🔄 Starting database connection...");
 connectToDb()
   .then(() => {
@@ -45,58 +44,57 @@ export const handler = startServerAndCreateNextHandler<NextRequest, Context>(
   }
 );
 
-// Add CORS headers
+// Helper function to add CORS headers
+function addCorsHeaders(response: Response, origin: string | null): Response {
+  const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000'];
+  
+  if (origin && allowedOrigins.includes(origin)) {
+    response.headers.set('Access-Control-Allow-Origin', origin);
+  } else {
+    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3001');
+  }
+  
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  response.headers.set('Access-Control-Allow-Credentials', 'true');
+  response.headers.set('Access-Control-Max-Age', '86400');
+  
+  return response;
+}
+
+// Handle GET requests
 export async function GET(request: NextRequest) {
   const response = await handler(request);
-  
-  // Add CORS headers - specify exact origin instead of wildcard for credentials
   const origin = request.headers.get('origin');
-  const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000'];
-  
-  if (origin && allowedOrigins.includes(origin)) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
-  } else {
-    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3001');
-  }
-  
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  response.headers.set('Access-Control-Allow-Credentials', 'true');
-  
-  return response;
+  return addCorsHeaders(response, origin);
 }
 
+// Handle POST requests
 export async function POST(request: NextRequest) {
   const response = await handler(request);
-  
-  // Add CORS headers - specify exact origin instead of wildcard for credentials
   const origin = request.headers.get('origin');
-  const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000'];
-  
-  if (origin && allowedOrigins.includes(origin)) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
-  } else {
-    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3001');
-  }
-  
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  response.headers.set('Access-Control-Allow-Credentials', 'true');
-  
-  return response;
+  return addCorsHeaders(response, origin);
 }
 
+// Handle preflight OPTIONS requests
 export async function OPTIONS(request: NextRequest) {
   const origin = request.headers.get('origin');
   const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000'];
   
-  return new Response(null, {
+  const response = new Response(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': origin && allowedOrigins.includes(origin) ? origin : 'http://localhost:3001',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Allow-Credentials': 'true',
-    },
   });
+  
+  if (origin && allowedOrigins.includes(origin)) {
+    response.headers.set('Access-Control-Allow-Origin', origin);
+  } else {
+    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3001');
+  }
+  
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  response.headers.set('Access-Control-Allow-Credentials', 'true');
+  response.headers.set('Access-Control-Max-Age', '86400');
+  
+  return response;
 }

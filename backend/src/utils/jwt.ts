@@ -117,7 +117,7 @@ const validateAndExtractDirectToken = (trimmedHeader: string): string => {
   }
   return trimmedHeader;
 };
-const parseBeaderToken = (trimmedHeader: string): string => {
+const parseBearerToken = (trimmedHeader: string): string => {
   const parts = trimmedHeader.split(/\s+/);
   
   if (parts.length !== 2) {
@@ -146,7 +146,7 @@ export const extractTokenFromHeader = (authHeader?: string): string => {
    if (!trimmedHeader.includes(' ')) {
     return validateAndExtractDirectToken(trimmedHeader);
   }
-    return parseBeaderToken(trimmedHeader);
+    return parseBearerToken(trimmedHeader);
 };
 
 export const signToken = (payload: JWTPayload, options?: jwt.SignOptions): string => {

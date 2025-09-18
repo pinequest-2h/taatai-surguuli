@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
 export interface IFeedback extends Document {
   session: Schema.Types.ObjectId;
@@ -94,4 +94,4 @@ FeedbackSchema.index({ psychologist: 1, createdAt: -1 });
 FeedbackSchema.index({ session: 1 });
 FeedbackSchema.index({ rating: 1 });
 
-export const Feedback = model<IFeedback>('Feedback', FeedbackSchema);
+export const Feedback = models.Feedback || model<IFeedback>('Feedback', FeedbackSchema);

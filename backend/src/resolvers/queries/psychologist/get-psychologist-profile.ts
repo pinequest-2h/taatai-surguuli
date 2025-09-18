@@ -6,8 +6,8 @@ export const getPsychologistProfile = async (
   { _id }: { _id: string }
 ) => {
   try {
-    const profile = await PsychologistProfile.findOne({ user: _id })
-      .populate('user', '_id fullName userName email profileImage');
+    const profile = await PsychologistProfile.findById(_id)
+      .populate('user', '_id fullName userName email profileImage role isPrivate');
 
     if (!profile) {
       return null;
@@ -25,19 +25,19 @@ export const getPsychologistProfile = async (
 export const getPsychologistProfiles = async (
   _parent: unknown,
   { filters, limit = 20, offset = 0 }: { 
-    filters?: any; 
+    filters?: Record<string, unknown>; 
     limit?: number; 
     offset?: number 
   }
 ) => {
   try {
-    const query: any = {};
+    const query: Record<string, unknown> = {};
     
     if (filters) {
-      if (filters.specializations && filters.specializations.length > 0) {
+      if (filters.specializations && Array.isArray(filters.specializations) && filters.specializations.length > 0) {
         query.specializations = { $in: filters.specializations };
       }
-      if (filters.languages && filters.languages.length > 0) {
+      if (filters.languages && Array.isArray(filters.languages) && filters.languages.length > 0) {
         query.languages = { $in: filters.languages };
       }
       if (filters.minExperience) {
@@ -55,7 +55,7 @@ export const getPsychologistProfiles = async (
     }
 
     const profiles = await PsychologistProfile.find(query)
-      .populate('user', '_id fullName userName profileImage')
+      .populate('user', '_id fullName userName profileImage role isPrivate')
       .sort({ averageRating: -1, totalSessions: -1 })
       .skip(offset)
       .limit(limit);
@@ -93,7 +93,7 @@ export const getAvailablePsychologists = async (
     const profiles = await PsychologistProfile.find({
       isAcceptingNewClients: true,
     })
-      .populate('user', '_id fullName userName profileImage');
+      .populate('user', '_id fullName userName profileImage role isPrivate');
 
     return profiles.map(profile => profile.toObject());
   } catch (error: unknown) {

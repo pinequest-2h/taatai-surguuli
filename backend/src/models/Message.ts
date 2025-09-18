@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
 export interface IMessage extends Document {
   session: Schema.Types.ObjectId;
@@ -74,4 +74,4 @@ MessageSchema.index({ session: 1, createdAt: -1 });
 MessageSchema.index({ sender: 1, recipient: 1 });
 MessageSchema.index({ isRead: 1 });
 
-export const Message = model<IMessage>('Message', MessageSchema);
+export const Message = models.Message || model<IMessage>('Message', MessageSchema);

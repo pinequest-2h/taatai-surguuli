@@ -179,173 +179,6 @@ export const GET_AVAILABLE_PSYCHOLOGISTS = gql`
   }
 `;
 
-// Appointment Queries
-export const GET_APPOINTMENT_BY_ID = gql`
-  query GetAppointmentById($_id: ID!) {
-    getAppointmentById(_id: $_id) {
-      _id
-      psychologist {
-        _id
-        fullName
-        userName
-        profileImage
-      }
-      child {
-        _id
-        fullName
-        userName
-        profileImage
-      }
-      scheduledDate
-      duration
-      type
-      status
-      notes
-      location
-      isOnline
-      meetingLink
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-export const GET_APPOINTMENTS = gql`
-  query GetAppointments($filters: AppointmentFilters, $limit: Int, $offset: Int) {
-    getAppointments(filters: $filters, limit: $limit, offset: $offset) {
-      edges {
-        node {
-          _id
-          psychologist {
-            _id
-            fullName
-            userName
-            profileImage
-          }
-          child {
-            _id
-            fullName
-            userName
-            profileImage
-          }
-          scheduledDate
-          duration
-          type
-          status
-          notes
-          location
-          isOnline
-          meetingLink
-        }
-        cursor
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      totalCount
-    }
-  }
-`;
-
-export const GET_PSYCHOLOGIST_APPOINTMENTS = gql`
-  query GetPsychologistAppointments($psychologistId: ID!, $status: AppointmentStatus, $limit: Int, $offset: Int) {
-    getPsychologistAppointments(psychologistId: $psychologistId, status: $status, limit: $limit, offset: $offset) {
-      edges {
-        node {
-          _id
-          child {
-            _id
-            fullName
-            userName
-            profileImage
-          }
-          scheduledDate
-          duration
-          type
-          status
-          notes
-          location
-          isOnline
-          meetingLink
-        }
-        cursor
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      totalCount
-    }
-  }
-`;
-
-export const GET_CHILD_APPOINTMENTS = gql`
-  query GetChildAppointments($childId: ID!, $status: AppointmentStatus, $limit: Int, $offset: Int) {
-    getChildAppointments(childId: $childId, status: $status, limit: $limit, offset: $offset) {
-      edges {
-        node {
-          _id
-          psychologist {
-            _id
-            fullName
-            userName
-            profileImage
-          }
-          scheduledDate
-          duration
-          type
-          status
-          notes
-          location
-          isOnline
-          meetingLink
-        }
-        cursor
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      totalCount
-    }
-  }
-`;
-
-export const GET_UPCOMING_APPOINTMENTS = gql`
-  query GetUpcomingAppointments($userId: ID!, $limit: Int) {
-    getUpcomingAppointments(userId: $userId, limit: $limit) {
-      _id
-      psychologist {
-        _id
-        fullName
-        userName
-        profileImage
-      }
-      child {
-        _id
-        fullName
-        userName
-        profileImage
-      }
-      scheduledDate
-      duration
-      type
-      status
-      notes
-      location
-      isOnline
-      meetingLink
-    }
-  }
-`;
-
 // Session Queries
 export const GET_SESSIONS = gql`
   query GetSessions($filters: SessionFilters, $limit: Int, $offset: Int) {
@@ -419,37 +252,124 @@ export const GET_MESSAGES = gql`
   }
 `;
 
-// Feedback Queries
-export const GET_FEEDBACK = gql`
-  query GetFeedback($filters: FeedbackFilters, $limit: Int, $offset: Int) {
-    getFeedback(filters: $filters, limit: $limit, offset: $offset) {
-      edges {
-        node {
-          _id
-          psychologist {
-            _id
-            fullName
-            userName
-          }
-          child {
-            _id
-            fullName
-            userName
-          }
-          rating
-          comment
-          sessionId
-          createdAt
-        }
-        cursor
+// Chatroom Queries
+export const GET_CHATROOMS = gql`
+  query GetChatrooms($userId: ID!) {
+    getChatrooms(userId: $userId) {
+      _id
+      child {
+        _id
+        fullName
+        userName
+        profileImage
       }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
+      psychologist {
+        _id
+        fullName
+        userName
+        profileImage
       }
-      totalCount
+      isActive
+      lastMessage {
+        _id
+        content
+        createdAt
+      }
+      lastMessageAt
+      unreadCount {
+        child
+        psychologist
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_CHATROOM_BY_ID = gql`
+  query GetChatroomById($_id: ID!) {
+    getChatroomById(_id: $_id) {
+      _id
+      child {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      psychologist {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      isActive
+      lastMessage {
+        _id
+        content
+        createdAt
+      }
+      lastMessageAt
+      unreadCount {
+        child
+        psychologist
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_CHATROOM_MESSAGES = gql`
+  query GetChatroomMessages($chatroomId: ID!, $limit: Int, $offset: Int) {
+    getChatroomMessages(chatroomId: $chatroomId, limit: $limit, offset: $offset) {
+      _id
+      chatroom {
+        _id
+      }
+      sender {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      content
+      type
+      isRead
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_OR_CREATE_CHATROOM = gql`
+  query GetOrCreateChatroom($childId: ID!, $psychologistId: ID!) {
+    getOrCreateChatroom(childId: $childId, psychologistId: $psychologistId) {
+      _id
+      child {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      psychologist {
+        _id
+        fullName
+        userName
+        profileImage
+      }
+      isActive
+      lastMessage {
+        _id
+        content
+        createdAt
+      }
+      lastMessageAt
+      unreadCount {
+        child
+        psychologist
+      }
+      createdAt
+      updatedAt
     }
   }
 `;

@@ -88,7 +88,7 @@ const PsychologistsPage = () => {
   };
 
   const getAvailabilityText = (isAccepting: boolean) => {
-    return isAccepting ? 'Accepting New Clients' : 'Not Accepting New Clients';
+    return isAccepting ? 'Шинэ үйлчлүүлэгч хүлээн авч байна' : 'Шинэ үйлчлүүлэгч хүлээн авч байхгүй';
   };
 
   return (
@@ -100,7 +100,7 @@ const PsychologistsPage = () => {
             <div className="flex items-center">
               <Link href="/dashboard" className="flex items-center">
                 <Brain className="h-8 w-8 text-blue-600" />
-                <span className="ml-2 text-xl font-bold text-gray-900">PsychConnect</span>
+                <span className="ml-2 text-xl font-bold text-gray-900">Сэтгэл Сэтгэлгээ</span>
               </Link>
             </div>
             
@@ -109,7 +109,7 @@ const PsychologistsPage = () => {
                 href="/dashboard"
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Dashboard
+                Хяналтын самбар
               </Link>
             </div>
           </div>
@@ -120,10 +120,10 @@ const PsychologistsPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Find Your Perfect Psychologist 🌟
+            Төгс сэтгэл судлаачаа олоорой 🌟
           </h1>
           <p className="text-gray-600">
-            Connect with qualified mental health professionals who specialize in child and family therapy
+            Хүүхэд болон гэр бүлийн эмчилгээнд мэргэшсэн мэргэжлийн сэтгэл зүйн эрүүл мэндийн мэргэжилтнүүдтэй холбогдоорой
           </p>
         </div>
 
@@ -133,13 +133,13 @@ const PsychologistsPage = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-8">
               <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                 <Filter className="h-5 w-5 mr-2" />
-                Filters
+                Шүүлтүүр
               </h2>
 
               {/* Search */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Search
+                  Хайх
                 </label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -148,7 +148,7 @@ const PsychologistsPage = () => {
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Search psychologists..."
+                    placeholder="Сэтгэл судлаач хайх..."
                   />
                 </div>
               </div>
@@ -156,7 +156,7 @@ const PsychologistsPage = () => {
               {/* Specializations */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Specializations
+                  Мэргэшил
                 </label>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {specializations.map((spec) => (
@@ -178,7 +178,7 @@ const PsychologistsPage = () => {
               {/* Languages */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Languages
+                  Хэл
                 </label>
                 <div className="space-y-2">
                   {languages.map((lang) => (
@@ -198,7 +198,7 @@ const PsychologistsPage = () => {
               {/* Experience */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Minimum Experience (years)
+                  Хамгийн бага туршлага (жил)
                 </label>
                 <input
                   type="number"
@@ -213,7 +213,7 @@ const PsychologistsPage = () => {
               {/* Hourly Rate */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Max Hourly Rate ($)
+                  Хамгийн их цагийн төлбөр ($)
                 </label>
                 <input
                   type="number"
@@ -234,7 +234,7 @@ const PsychologistsPage = () => {
                     onChange={(e) => setFilters(prev => ({ ...prev, isAcceptingNewClients: e.target.checked }))}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Accepting New Clients</span>
+                  <span className="ml-2 text-sm text-gray-700">Шинэ үйлчлүүлэгч хүлээн авч байна</span>
                 </label>
               </div>
 
@@ -249,7 +249,7 @@ const PsychologistsPage = () => {
                 })}
                 className="w-full text-sm text-gray-600 hover:text-gray-800 underline"
               >
-                Clear All Filters
+                Бүх шүүлтүүрийг цэвэрлэх
               </button>
             </div>
           </div>
@@ -267,8 +267,8 @@ const PsychologistsPage = () => {
             ) : psychologists.length === 0 ? (
               <div className="text-center py-12">
                 <Brain className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No psychologists found</h3>
-                <p className="text-gray-600">Try adjusting your filters to see more results.</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Сэтгэл судлаач олдсонгүй</h3>
+                <p className="text-gray-600">Илүү олон үр дүнг харахын тулд шүүлтүүрээ тохируулна уу.</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -305,7 +305,7 @@ const PsychologistsPage = () => {
                               ))}
                               {psychologist.specializations.length > 3 && (
                                 <span className="text-xs text-gray-500">
-                                  +{psychologist.specializations.length - 3} more
+                                  +{psychologist.specializations.length - 3} илүү
                                 </span>
                               )}
                             </div>
@@ -319,7 +319,7 @@ const PsychologistsPage = () => {
                             <div className="flex items-center space-x-6 text-sm text-gray-600">
                               <div className="flex items-center">
                                 <Clock className="h-4 w-4 mr-1" />
-                                {psychologist.experience} years experience
+                                {psychologist.experience} жилийн туршлага
                               </div>
                               <div className="flex items-center">
                                 <Star className="h-4 w-4 mr-1 text-yellow-500" />
@@ -327,7 +327,7 @@ const PsychologistsPage = () => {
                               </div>
                               <div className="flex items-center">
                                 <Users className="h-4 w-4 mr-1" />
-                                {psychologist.totalClients} clients
+                                {psychologist.totalClients} үйлчлүүлэгч
                               </div>
                             </div>
                           </div>
@@ -338,7 +338,7 @@ const PsychologistsPage = () => {
                               <span className="text-2xl font-bold text-gray-900">
                                 ${psychologist.hourlyRate}
                               </span>
-                              <span className="text-gray-600">/hour</span>
+                              <span className="text-gray-600">/цаг</span>
                             </div>
                             
                             <div className={`text-sm font-medium ${getAvailabilityColor(psychologist.isAcceptingNewClients)}`}>
@@ -352,7 +352,7 @@ const PsychologistsPage = () => {
                           <div className="mt-4 flex items-center">
                             <Languages className="h-4 w-4 text-gray-400 mr-2" />
                             <span className="text-sm text-gray-600">
-                              Languages: {psychologist.languages.join(', ')}
+                              Хэл: {psychologist.languages.join(', ')}
                             </span>
                           </div>
                         )}
@@ -364,19 +364,15 @@ const PsychologistsPage = () => {
                             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                           >
                             <Heart className="h-4 w-4 mr-2" />
-                            View Profile
+                            Профайл харах
                           </Link>
                           <Link
-                            href={`/appointments/new?psychologistId=${psychologist._id}`}
+                            href={`/psychologists/${psychologist._id}`}
                             className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                           >
-                            <Calendar className="h-4 w-4 mr-2" />
-                            Book Session
-                          </Link>
-                          <button className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                             <MessageCircle className="h-4 w-4 mr-2" />
-                            Message
-                          </button>
+                            Зурвас илгээх
+                          </Link>
                         </div>
                       </div>
                     </div>

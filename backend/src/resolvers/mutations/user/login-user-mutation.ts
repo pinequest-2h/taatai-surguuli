@@ -40,6 +40,11 @@ export const loginUser = async (
     const userObject = user.toObject();
     delete userObject.password;
 
+    // Ensure isPrivate field exists with default value for existing users
+    if (userObject.isPrivate === undefined || userObject.isPrivate === null) {
+      userObject.isPrivate = false;
+    }
+
     return {
       user: userObject,
       token,

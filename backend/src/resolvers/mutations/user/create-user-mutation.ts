@@ -13,7 +13,7 @@ const createUserObject = (input: CreateUserInput) => {
     password: hashedPassword,
     profileImage: "",
     isVerified: false,
-    role: "CHILD",
+    role: input.role || "CHILD",
   });
 };
 

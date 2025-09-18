@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
 export interface IChildProfile extends Document {
   user: Schema.Types.ObjectId;
@@ -162,4 +162,4 @@ const ChildProfileSchema = new Schema<IChildProfile>({
   timestamps: true
 });
 
-export const ChildProfile = model<IChildProfile>('ChildProfile', ChildProfileSchema);
+export const ChildProfile = models.ChildProfile || model<IChildProfile>('ChildProfile', ChildProfileSchema);

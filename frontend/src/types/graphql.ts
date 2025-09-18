@@ -53,22 +53,6 @@ export interface PsychologistProfile {
   updatedAt: string;
 }
 
-export interface Appointment {
-  _id: string;
-  psychologist: User;
-  child: User;
-  scheduledDate: string;
-  duration: number;
-  type: 'CONSULTATION' | 'THERAPY_SESSION' | 'FOLLOW_UP' | 'EMERGENCY';
-  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
-  notes?: string;
-  location?: string;
-  isOnline: boolean;
-  meetingLink?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface PsychologistConnection {
   edges: { node: PsychologistProfile; cursor: string }[];
   pageInfo: {
@@ -80,36 +64,13 @@ export interface PsychologistConnection {
   totalCount: number;
 }
 
-export interface AppointmentConnection {
-  edges: { node: Appointment; cursor: string }[];
-  pageInfo: {
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-    startCursor?: string;
-    endCursor?: string;
-  };
-  totalCount: number;
-}
-
 // GraphQL response types
-export interface GetUpcomingAppointmentsResponse {
-  getUpcomingAppointments: Appointment[];
-}
-
 export interface GetPsychologistProfileResponse {
   getPsychologistProfile: PsychologistProfile;
 }
 
 export interface GetPsychologistProfilesResponse {
   getPsychologistProfiles: PsychologistConnection;
-}
-
-export interface GetChildAppointmentsResponse {
-  getChildAppointments: AppointmentConnection;
-}
-
-export interface GetPsychologistAppointmentsResponse {
-  getPsychologistAppointments: AppointmentConnection;
 }
 
 export interface LoginUserResponse {
@@ -120,6 +81,45 @@ export interface CreateUserResponse {
   createUser: User;
 }
 
-export interface CreateAppointmentResponse {
-  createAppointment: Appointment;
+export interface LoginInput {
+  identifier: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
+}
+
+export interface GetChatroomsResponse {
+  getChatrooms: Chatroom[];
+}
+
+export interface Chatroom {
+  _id: string;
+  child: User;
+  psychologist: User;
+  isActive: boolean;
+  lastMessage?: ChatroomMessage;
+  lastMessageAt?: string;
+  unreadCount: UnreadCount;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UnreadCount {
+  child: number;
+  psychologist: number;
+  [key: string]: number;
+}
+
+export interface ChatroomMessage {
+  _id: string;
+  chatroom: Chatroom;
+  sender: User;
+  content: string;
+  type: 'TEXT' | 'IMAGE' | 'FILE' | 'AUDIO' | 'VIDEO';
+  isRead: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -12,7 +12,6 @@ import {
   DollarSign,
   Edit, 
   Save, 
-  X,
   ArrowLeft,
   Plus,
   Trash2,
@@ -22,6 +21,56 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { GET_PSYCHOLOGIST_PROFILE } from '@/lib/graphql/queries';
 import { CREATE_PSYCHOLOGIST_PROFILE, UPDATE_PSYCHOLOGIST_PROFILE } from '@/lib/graphql/mutations';
+
+interface PsychologistProfile {
+  _id: string;
+  user: {
+    _id: string;
+    fullName: string;
+    userName: string;
+    email?: string;
+    phoneNumber?: string;
+    profileImage?: string;
+  };
+  specializations: string[];
+  experience: number;
+  education: string[];
+  certifications: string[];
+  languages: string[];
+  hourlyRate: number;
+  availability: string;
+  bio: string;
+  profileImage?: string;
+  coverImage?: string;
+  isVerified: boolean;
+  isAcceptingNewClients: boolean;
+  averageRating?: number;
+  totalSessions: number;
+  totalClients: number;
+  workingHours: {
+    monday?: { isAvailable: boolean; startTime?: string; endTime?: string; breaks: Array<{ startTime: string; endTime: string }> };
+    tuesday?: { isAvailable: boolean; startTime?: string; endTime?: string; breaks: Array<{ startTime: string; endTime: string }> };
+    wednesday?: { isAvailable: boolean; startTime?: string; endTime?: string; breaks: Array<{ startTime: string; endTime: string }> };
+    thursday?: { isAvailable: boolean; startTime?: string; endTime?: string; breaks: Array<{ startTime: string; endTime: string }> };
+    friday?: { isAvailable: boolean; startTime?: string; endTime?: string; breaks: Array<{ startTime: string; endTime: string }> };
+    saturday?: { isAvailable: boolean; startTime?: string; endTime?: string; breaks: Array<{ startTime: string; endTime: string }> };
+    sunday?: { isAvailable: boolean; startTime?: string; endTime?: string; breaks: Array<{ startTime: string; endTime: string }> };
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface GetPsychologistProfileResponse {
+  getPsychologistProfile?: PsychologistProfile;
+}
+
+interface CreatePsychologistProfileResponse {
+  createPsychologistProfile?: PsychologistProfile;
+}
+
+interface UpdatePsychologistProfileResponse {
+  updatePsychologistProfile?: PsychologistProfile;
+}
 
 const PsychologistProfilePage = () => {
   const { user } = useAuth();
@@ -42,13 +91,13 @@ const PsychologistProfilePage = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const { data, loading, refetch } = useQuery(GET_PSYCHOLOGIST_PROFILE, {
+  const { data, loading, refetch } = useQuery<GetPsychologistProfileResponse>(GET_PSYCHOLOGIST_PROFILE, {
     variables: { _id: user?._id },
     skip: !user?._id,
   });
 
-  const [createProfile] = useMutation(CREATE_PSYCHOLOGIST_PROFILE);
-  const [updateProfile] = useMutation(UPDATE_PSYCHOLOGIST_PROFILE);
+  const [createProfile] = useMutation<CreatePsychologistProfileResponse>(CREATE_PSYCHOLOGIST_PROFILE);
+  const [updateProfile] = useMutation<UpdatePsychologistProfileResponse>(UPDATE_PSYCHOLOGIST_PROFILE);
 
   const profile = data?.getPsychologistProfile;
 
@@ -149,8 +198,8 @@ const PsychologistProfilePage = () => {
         // Profile was updated
         alert('✅ Your professional profile has been updated successfully!');
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to save profile. Please try again.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to save profile. Please try again.');
     } finally {
       setIsLoading(false);
     }
