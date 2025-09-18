@@ -75,7 +75,6 @@ export const GET_PSYCHOLOGIST_PROFILE = gql`
       experience
       education
       certifications
-      languages
       hourlyRate
       availability
       bio
@@ -143,7 +142,6 @@ export const GET_PSYCHOLOGIST_PROFILES = gql`
           }
           specializations
           experience
-          hourlyRate
           bio
           isAcceptingNewClients
           averageRating

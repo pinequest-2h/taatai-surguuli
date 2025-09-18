@@ -90,6 +90,8 @@ const PsychologistProfileSchema = new Schema<IPsychologistProfile>({
     ],
     required: true
   }],
+
+  
   experience: {
     type: Number,
     required: true,
@@ -102,10 +104,7 @@ const PsychologistProfileSchema = new Schema<IPsychologistProfile>({
   certifications: [{
     type: String
   }],
-  languages: [{
-    type: String,
-    required: true
-  }],
+  
   hourlyRate: {
     type: Number,
     required: true,
