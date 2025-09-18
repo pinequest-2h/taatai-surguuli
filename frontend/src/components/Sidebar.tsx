@@ -12,6 +12,7 @@ import {
   Home, 
   Users
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { user, logout, isAuthenticated } = useAuth();
-
+  const router = useRouter();
   return (
     <>
       {/* Sidebar */}
@@ -78,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <div className="px-2 py-2">
-                    <div className="flex items-center">
+                    <div className="flex items-center cursor-pointer" onClick={() => router.push('/profile')}>
                       <User className="h-8 w-8 text-gray-400" />
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-700">{user?.fullName}</p>
@@ -89,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   
                   <button
                     onClick={logout}
-                    className="group flex items-center w-full px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    className="group flex items-center w-full px-3 py-3 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
                   >
                     <LogOut className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
                     Гарах
@@ -129,7 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
       </div>
 
-      {/* Mobile overlay */}
+
       {isOpen && (
         <div 
           className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"

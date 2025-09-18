@@ -7,15 +7,11 @@ import {
   Brain, 
   Star, 
   Clock, 
-
   Filter, 
   Search,
   Heart,
   MessageCircle,
-  Calendar,
-  Users,
-
-  Languages
+  Users
 } from 'lucide-react';
 import { GET_PSYCHOLOGIST_PROFILES } from '@/lib/graphql/queries';
 import { GetPsychologistProfilesResponse, PsychologistProfile } from '@/types/graphql';
@@ -23,9 +19,7 @@ import { GetPsychologistProfilesResponse, PsychologistProfile } from '@/types/gr
 const PsychologistsPage = () => {
   const [filters, setFilters] = useState({
     specializations: [] as string[],
-    languages: [] as string[],
     minExperience: 0,
-    maxHourlyRate: 1000,
     isAcceptingNewClients: true,
   });
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -35,7 +29,6 @@ const PsychologistsPage = () => {
       filters: {
         ...filters,
         specializations: filters.specializations.length > 0 ? filters.specializations : undefined,
-        languages: filters.languages.length > 0 ? filters.languages : undefined,
       },
       limit: 20,
       offset: 0,
@@ -44,22 +37,24 @@ const PsychologistsPage = () => {
 
   const psychologists = data?.getPsychologistProfiles?.edges?.map((edge) => edge.node) || [];
 
-  const specializations = [
-    'CHILD_PSYCHOLOGY',
-    'ADOLESCENT_PSYCHOLOGY',
-    'FAMILY_THERAPY',
-    'COGNITIVE_BEHAVIORAL_THERAPY',
-    'TRAUMA_THERAPY',
-    'ANXIETY_DISORDERS',
-    'DEPRESSION',
-    'AUTISM_SPECTRUM',
-    'LEARNING_DISABILITIES',
-    'BEHAVIORAL_ISSUES',
-    'SOCIAL_SKILLS',
-    'EMOTIONAL_REGULATION',
+  // Frontend should send backend enum values, but display Mongolian labels
+  const specializationOptions = [
+    { value: 'CHILD_PSYCHOLOGY', label: 'ХҮҮХДИЙН_СЭТГЭЛ_СУДЛАЛ' },
+    { value: 'ADOLESCENT_PSYCHOLOGY', label: 'ӨСВӨР_НАСНЫ_СЭТГЭЛ_СУДЛАЛ' },
+    { value: 'FAMILY_THERAPY', label: 'ГЭР_БҮЛИЙН_СЭТГЭЛ_ЗАСАЛ' },
+    { value: 'COGNITIVE_BEHAVIORAL_THERAPY', label: 'ТАНИН_МЭДЭХҮЙН_ЗАН_ҮЙЛИЙН_СЭТГЭЛ_ЗАСАЛ' },
+    { value: 'TRAUMA_THERAPY', label: 'СЭТГЭЛ_ЗҮЙН_ГЭМТЛИЙН_ЭМЧИЛГЭЭ' },
+    { value: 'ANXIETY_DISORDERS', label: 'ТҮГШҮҮРИЙН_ЭМГЭГҮҮД' },
+    { value: 'DEPRESSION', label: 'СЭТГЭЛ_ГУТРАЛ' },
+    { value: 'AUTISM_SPECTRUM', label: 'АУТИЗМЫН_ХҮРЭЭНИЙ_ЭМГЭГ' },
+    { value: 'LEARNING_DISABILITIES', label: 'СУРГАЛТЫН_БЭРХШЭЭЛ' },
+    { value: 'BEHAVIORAL_ISSUES', label: 'ЗАН_ҮЙЛИЙН_АСУУДАЛ' },
+    { value: 'SOCIAL_SKILLS', label: 'НИЙГМИЙН_УР_ЧАДВАР' },
+    { value: 'EMOTIONAL_REGULATION', label: 'СЭТГЭЛ_ХӨДЛӨЛӨӨ_ЗОХИЦУУЛАХ_ЧАДВАР' },
   ];
 
-  const languages = ['English', 'Spanish', 'French', 'German', 'Mandarin', 'Japanese'];
+
+
 
   const handleSpecializationChange = (spec: string) => {
     setFilters(prev => ({
@@ -70,14 +65,7 @@ const PsychologistsPage = () => {
     }));
   };
 
-  const handleLanguageChange = (lang: string) => {
-    setFilters(prev => ({
-      ...prev,
-      languages: prev.languages.includes(lang)
-        ? prev.languages.filter(l => l !== lang)
-        : [...prev.languages, lang]
-    }));
-  };
+  //
 
   const formatSpecialization = (spec: string) => {
     return spec.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -159,42 +147,21 @@ const PsychologistsPage = () => {
                   Мэргэшил
                 </label>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {specializations.map((spec) => (
-                    <label key={spec} className="flex items-center">
+                  {specializationOptions.map((option) => (
+                    <label key={option.value} className="flex items-center">
                       <input
                         type="checkbox"
-                        checked={filters.specializations.includes(spec)}
-                        onChange={() => handleSpecializationChange(spec)}
+                        checked={filters.specializations.includes(option.value)}
+                        onChange={() => handleSpecializationChange(option.value)}
                         className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                       <span className="ml-2 text-sm text-gray-700">
-                        {formatSpecialization(spec)}
+                        {formatSpecialization(option.label)}
                       </span>
                     </label>
                   ))}
                 </div>
               </div>
-
-              {/* Languages */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Хэл
-                </label>
-                <div className="space-y-2">
-                  {languages.map((lang) => (
-                    <label key={lang} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.languages.includes(lang)}
-                        onChange={() => handleLanguageChange(lang)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{lang}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
               {/* Experience */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -210,20 +177,7 @@ const PsychologistsPage = () => {
                 />
               </div>
 
-              {/* Hourly Rate */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Хамгийн их цагийн төлбөр ($)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="1000"
-                  value={filters.maxHourlyRate}
-                  onChange={(e) => setFilters(prev => ({ ...prev, maxHourlyRate: parseInt(e.target.value) || 1000 }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
+              {/* Hourly Rate removed */}
 
               {/* Availability */}
               <div className="mb-6">
@@ -242,9 +196,7 @@ const PsychologistsPage = () => {
               <button
                 onClick={() => setFilters({
                   specializations: [],
-                  languages: [],
                   minExperience: 0,
-                  maxHourlyRate: 1000,
                   isAcceptingNewClients: true,
                 })}
                 className="w-full text-sm text-gray-600 hover:text-gray-800 underline"
@@ -334,28 +286,13 @@ const PsychologistsPage = () => {
 
                           {/* Right Side */}
                           <div className="text-right">
-                            <div className="mb-2">
-                              <span className="text-2xl font-bold text-gray-900">
-                                ${psychologist.hourlyRate}
-                              </span>
-                              <span className="text-gray-600">/цаг</span>
-                            </div>
-                            
-                            <div className={`text-sm font-medium ${getAvailabilityColor(psychologist.isAcceptingNewClients)}`}>
+                            <div className={`text-sm font-medium ${getAvailabilityColor(psychologist.isAcceptingNewClients)} mt-2`}>
                               {getAvailabilityText(psychologist.isAcceptingNewClients)}
                             </div>
                           </div>
                         </div>
 
-                        {/* Languages */}
-                        {psychologist.languages && psychologist.languages.length > 0 && (
-                          <div className="mt-4 flex items-center">
-                            <Languages className="h-4 w-4 text-gray-400 mr-2" />
-                            <span className="text-sm text-gray-600">
-                              Хэл: {psychologist.languages.join(', ')}
-                            </span>
-                          </div>
-                        )}
+                        {/* Languages removed */}
 
                         {/* Action Buttons */}
                         <div className="mt-6 flex items-center space-x-3">

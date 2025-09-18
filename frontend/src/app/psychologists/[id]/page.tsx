@@ -10,7 +10,6 @@ import {
   Clock, 
   MessageCircle,
   Award,
-  Languages,
   ArrowLeft,
   CheckCircle,
   Shield,
@@ -239,12 +238,6 @@ const PsychologistProfilePage = () => {
 
                 {/* Right Side */}
                 <div className="text-right">
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold text-gray-900">
-                      ${psychologist.hourlyRate}
-                    </span>
-                    <span className="text-gray-600 text-lg">/hour</span>
-                  </div>
                   
                   <div className="space-y-3">
                     <button
@@ -313,25 +306,6 @@ const PsychologistProfilePage = () => {
                     ))}
                   </div>
                 </div>
-
-                {/* Languages */}
-                {psychologist.languages && psychologist.languages.length > 0 && (
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Languages</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {psychologist.languages.map((lang: string) => (
-                        <span
-                          key={lang}
-                          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800"
-                        >
-                          <Languages className="h-4 w-4 mr-1" />
-                          {lang}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* Certifications */}
                 {psychologist.certifications && psychologist.certifications.length > 0 && (
                   <div>
@@ -419,7 +393,7 @@ const PsychologistProfilePage = () => {
           </div>
         </div>
 
-        {/* Reviews Section */}
+
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
           <h3 className="text-xl font-bold text-gray-900 mb-6">Reviews & Ratings</h3>
           <div className="text-center py-8">

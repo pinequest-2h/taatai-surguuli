@@ -32,10 +32,26 @@ export const getPsychologistProfiles = async (
 ) => {
   try {
     const query: Record<string, unknown> = {};
+    const specializationEnumToMn: Record<string, string> = {
+      CHILD_PSYCHOLOGY: "ХҮҮХДИЙН_СЭТГЭЛ_СУДЛАЛ",
+      ADOLESCENT_PSYCHOLOGY: "ӨСВӨР_НАСНЫ_СЭТГЭЛ_СУДЛАЛ",
+      FAMILY_THERAPY: "ГЭР_БҮЛИЙН_СЭТГЭЛ_ЗАСАЛ",
+      COGNITIVE_BEHAVIORAL_THERAPY: "ТАНИН_МЭДЭХҮЙН_ЗАН_ҮЙЛИЙН_СЭТГЭЛ_ЗАСАЛ",
+      TRAUMA_THERAPY: "СЭТГЭЛ_ЗҮЙН_ГЭМТЛИЙН_ЭМЧИЛГЭЭ",
+      ANXIETY_DISORDERS: "ТҮГШҮҮРИЙН_ЭМГЭГҮҮД",
+      DEPRESSION: "СЭТГЭЛ_ГУТРАЛ",
+      AUTISM_SPECTRUM: "АУТИЗМЫН_ХҮРЭЭНИЙ_ЭМГЭГ",
+      LEARNING_DISABILITIES: "СУРГАЛТЫН_БЭРХШЭЭЛ",
+      BEHAVIORAL_ISSUES: "ЗАН_ҮЙЛИЙН_АСУУДАЛ",
+      SOCIAL_SKILLS: "НИЙГМИЙН_УР_ЧАДВАР",
+      EMOTIONAL_REGULATION: "СЭТГЭЛ_ХӨДЛӨЛӨӨ_ЗОХИЦУУЛАХ_ЧАДВАР",
+    };
     
     if (filters) {
       if (filters.specializations && Array.isArray(filters.specializations) && filters.specializations.length > 0) {
-        query.specializations = { $in: filters.specializations };
+        const mappedSpecs = (filters.specializations as string[])
+          .map((s) => specializationEnumToMn[s] || s);
+        query.specializations = { $in: mappedSpecs };
       }
       if (filters.languages && Array.isArray(filters.languages) && filters.languages.length > 0) {
         query.languages = { $in: filters.languages };
@@ -83,13 +99,8 @@ export const getPsychologistProfiles = async (
   }
 };
 
-export const getAvailablePsychologists = async (
-  _parent: unknown,
-  { date, time, duration }: { date: string; time: string; duration: number }
-) => {
+export const getAvailablePsychologists = async () => {
   try {
-    // For now, return all psychologists who are accepting new clients
-    // In a real app, you'd check their availability schedule
     const profiles = await PsychologistProfile.find({
       isAcceptingNewClients: true,
     })
