@@ -1,0 +1,13 @@
+{
+  "name": "taatai-monorepo",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "cd backend && yarn install --frozen-lockfile && yarn build",
+    "start": "cd backend && yarn start -p $PORT"
+  }
+}
+
+
