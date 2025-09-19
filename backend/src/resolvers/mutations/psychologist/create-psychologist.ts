@@ -18,7 +18,7 @@ export const createPsychologist = async (
 
     await psychologist.save();
     return psychologist.toObject();
-  } catch (error) {
+  } catch (_error) {
     throw new GraphQLError("Failed to create psychologist", {
       extensions: { code: "CREATE_PSY_FAILED" },
     });
