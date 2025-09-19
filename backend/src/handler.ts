@@ -44,7 +44,7 @@ export const handler = startServerAndCreateNextHandler<NextRequest, Context>(
   }
 );
 
-// Helper function to add CORS headers
+
 function addCorsHeaders(response: Response, origin: string | null): Response {
   const envList = (process.env.ALLOWED_ORIGINS || '')
     .split(',')
@@ -74,21 +74,21 @@ function addCorsHeaders(response: Response, origin: string | null): Response {
   return response;
 }
 
-// Handle GET requests
+
 export async function GET(request: NextRequest) {
   const response = await handler(request);
   const origin = request.headers.get('origin');
   return addCorsHeaders(response, origin);
 }
 
-// Handle POST requests
+
 export async function POST(request: NextRequest) {
   const response = await handler(request);
   const origin = request.headers.get('origin');
   return addCorsHeaders(response, origin);
 }
 
-// Handle preflight OPTIONS requests
+
 export async function OPTIONS(request: NextRequest) {
   const origin = request.headers.get('origin');
   const response = new Response(null, { status: 200 });
