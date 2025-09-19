@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-// User Authentication Mutations
+
 export const CREATE_USER = gql`
   mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
@@ -50,7 +50,7 @@ export const UPDATE_USER = gql`
   }
 `;
 
-// Chatroom Mutations
+
 export const CREATE_CHATROOM = gql`
   mutation CreateChatroom($input: CreateChatroomInput!) {
     createChatroom(input: $input) {
@@ -106,7 +106,7 @@ export const MARK_CHATROOM_MESSAGES_AS_READ = gql`
   }
 `;
 
-// Psychologist Mutations
+
 export const CREATE_PSYCHOLOGIST_PROFILE = gql`
   mutation CreatePsychologistProfile($input: CreatePsychologistProfileInput!) {
     createPsychologistProfile(input: $input) {
@@ -146,7 +146,7 @@ export const UPDATE_PSYCHOLOGIST_PROFILE = gql`
   }
 `;
 
-// Session Mutations
+
 export const SCHEDULE_SESSION = gql`
   mutation ScheduleSession($input: ScheduleSessionInput!) {
     scheduleSession(input: $input) {
@@ -186,7 +186,7 @@ export const SEND_MESSAGE = gql`
   }
 `;
 
-// Feedback Mutations
+    
 export const SUBMIT_FEEDBACK = gql`
   mutation SubmitFeedback($input: SubmitFeedbackInput!) {
     submitFeedback(input: $input) {
