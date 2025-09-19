@@ -71,3 +71,54 @@ export interface Error {
 }
 
 // TODO: Add more generated types as your schema grows
+
+// Psychologist profile related generated types (mirrors GraphQL schema)
+export type Specialization =
+  | "CHILD_PSYCHOLOGY"
+  | "ADOLESCENT_PSYCHOLOGY"
+  | "FAMILY_THERAPY"
+  | "COGNITIVE_BEHAVIORAL_THERAPY"
+  | "TRAUMA_THERAPY"
+  | "ANXIETY_DISORDERS"
+  | "DEPRESSION"
+  | "AUTISM_SPECTRUM"
+  | "LEARNING_DISABILITIES"
+  | "BEHAVIORAL_ISSUES"
+  | "SOCIAL_SKILLS"
+  | "EMOTIONAL_REGULATION";
+
+export interface TimeSlotInput {
+  startTime: string;
+  endTime: string;
+}
+
+export interface DayScheduleInput {
+  isAvailable: boolean;
+  startTime?: string;
+  endTime?: string;
+  breaks: TimeSlotInput[];
+}
+
+export interface WorkingHoursInput {
+  monday?: DayScheduleInput;
+  tuesday?: DayScheduleInput;
+  wednesday?: DayScheduleInput;
+  thursday?: DayScheduleInput;
+  friday?: DayScheduleInput;
+  saturday?: DayScheduleInput;
+  sunday?: DayScheduleInput;
+}
+
+export interface CreatePsychologistProfileInput {
+  specializations: Specialization[];
+  experience: number;
+  education: string[];
+  certifications: string[];
+  languages: string[];
+  hourlyRate: number;
+  bio: string;
+  profileImage?: string;
+  coverImage?: string;
+  isAcceptingNewClients?: boolean;
+  workingHours: WorkingHoursInput;
+}
