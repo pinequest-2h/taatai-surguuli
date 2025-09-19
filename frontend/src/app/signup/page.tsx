@@ -27,7 +27,7 @@ const SignUpPage = () => {
 
   const router = useRouter();
 
-  // Debug: Monitor formData changes
+
   React.useEffect(() => {
     console.log('formData.role changed to:', formData.role);
   }, [formData.role]);
