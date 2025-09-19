@@ -46,14 +46,26 @@ export const handler = startServerAndCreateNextHandler<NextRequest, Context>(
 
 // Helper function to add CORS headers
 function addCorsHeaders(response: Response, origin: string | null): Response {
-  const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000'];
-  
-  if (origin && allowedOrigins.includes(origin)) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
-  } else {
-    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3001');
+  const envList = (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map(o => o.trim())
+    .filter(Boolean);
+
+  const defaultOrigins = ['http://localhost:3001', 'http://localhost:3000'];
+  const allowedOrigins = envList.length > 0 ? envList : defaultOrigins;
+
+  const isVercelPreview = (o: string): boolean => /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(o);
+
+  if (origin) {
+    if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
+      response.headers.set('Access-Control-Allow-Origin', origin);
+    }
   }
-  
+
+  if (!response.headers.get('Access-Control-Allow-Origin')) {
+    response.headers.set('Access-Control-Allow-Origin', defaultOrigins[0]);
+  }
+
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   response.headers.set('Access-Control-Allow-Credentials', 'true');
@@ -79,22 +91,6 @@ export async function POST(request: NextRequest) {
 // Handle preflight OPTIONS requests
 export async function OPTIONS(request: NextRequest) {
   const origin = request.headers.get('origin');
-  const allowedOrigins = ['http://localhost:3001', 'http://localhost:3000'];
-  
-  const response = new Response(null, {
-    status: 200,
-  });
-  
-  if (origin && allowedOrigins.includes(origin)) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
-  } else {
-    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3001');
-  }
-  
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  response.headers.set('Access-Control-Allow-Credentials', 'true');
-  response.headers.set('Access-Control-Max-Age', '86400');
-  
-  return response;
+  const response = new Response(null, { status: 200 });
+  return addCorsHeaders(response, origin);
 }
