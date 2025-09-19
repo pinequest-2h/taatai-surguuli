@@ -1,2 +1,1 @@
-/* eslint-disable @typescript-eslint/ban-types */
-export type Context = {};
+export type Context = Record<string, unknown>;
