@@ -1,10 +1,11 @@
 "use client";
 
-import { Report } from '@/types/graphql';
+import { Report, UpdateReportResponse } from '@/types/graphql';
 import { formatDistanceToNow } from 'date-fns';
 import { useMutation } from '@apollo/client/react';
 import { UPDATE_REPORT } from '@/lib/graphql/mutations';
 import { GET_MY_REPORTS } from '@/lib/graphql/queries';
+import { useAuth } from '@/context/AuthContext';
 
 interface ReportCardProps {
   report: Report;
@@ -19,15 +20,24 @@ export default function ReportCard({
   onStatusUpdate, 
   canEdit = false 
 }: ReportCardProps) {
-  const [updateReport, { loading }] = useMutation(UPDATE_REPORT, {
+  const { user } = useAuth();
+  
+  // Only psychologists and admins can edit reports (mark as reviewed/resolved)
+  const canActuallyEdit = canEdit && user && (user.role === 'PSYCHOLOGIST' || user.role === 'ADMIN');
+  
+  const [updateReport, { loading }] = useMutation<UpdateReportResponse>(UPDATE_REPORT, {
     refetchQueries: [
       {
         query: GET_MY_REPORTS,
         variables: { limit: 10, offset: 0 }
       }
     ],
-    onCompleted: () => {
-      onStatusUpdate?.(report._id, 'updated');
+    onCompleted: (data: UpdateReportResponse) => {
+      // Pass the actual updated status instead of 'updated'
+      const updatedStatus = data?.updateReport?.status;
+      if (onStatusUpdate && updatedStatus) {
+        onStatusUpdate(report._id, updatedStatus);
+      }
     },
     onError: (error) => {
       console.error('Error updating report:', error);
@@ -127,7 +137,7 @@ export default function ReportCard({
           Created {formatDistanceToNow(new Date(report.createdAt), { addSuffix: true })}
         </span>
         
-        {canEdit && (
+        {canActuallyEdit && (
           <div className="flex space-x-2">
             {report.status !== 'REVIEWED' && (
               <button

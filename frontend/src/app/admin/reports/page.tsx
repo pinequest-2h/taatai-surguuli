@@ -124,6 +124,7 @@ export default function AdminReportsPage() {
           <ReportList 
             showUser={true}
             canEdit={true}
+            showAllReports={true}
             onStatusUpdate={handleStatusUpdate}
           />
           
