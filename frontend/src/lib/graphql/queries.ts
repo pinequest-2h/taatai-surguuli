@@ -371,3 +371,94 @@ export const GET_OR_CREATE_CHATROOM = gql`
     }
   }
 `;
+
+// Report Queries
+export const GET_REPORTS = gql`
+  query GetReports($filters: ReportFilters, $limit: Int, $offset: Int) {
+    getReports(filters: $filters, limit: $limit, offset: $offset) {
+      edges {
+        node {
+          _id
+          userId {
+            _id
+            fullName
+            userName
+            email
+            profileImage
+          }
+          school
+          class
+          description
+          status
+          anonymous
+          createdAt
+          updatedAt
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+`;
+
+export const GET_REPORT_BY_ID = gql`
+  query GetReportById($_id: ID!) {
+    getReportById(_id: $_id) {
+      _id
+      userId {
+        _id
+        fullName
+        userName
+        email
+        profileImage
+      }
+      school
+      class
+      description
+      status
+      anonymous
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_MY_REPORTS = gql`
+  query GetMyReports($limit: Int, $offset: Int) {
+    getMyReports(limit: $limit, offset: $offset) {
+      edges {
+        node {
+          _id
+          userId {
+            _id
+            fullName
+            userName
+            email
+            profileImage
+          }
+          school
+          class
+          description
+          status
+          anonymous
+          createdAt
+          updatedAt
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+`;

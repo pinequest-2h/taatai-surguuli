@@ -70,9 +70,6 @@ export interface Error {
   code?: string;
 }
 
-// TODO: Add more generated types as your schema grows
-
-// Psychologist profile related generated types (mirrors GraphQL schema)
 export type Specialization =
   | "CHILD_PSYCHOLOGY"
   | "ADOLESCENT_PSYCHOLOGY"
@@ -121,4 +118,21 @@ export interface CreatePsychologistProfileInput {
   coverImage?: string;
   isAcceptingNewClients?: boolean;
   workingHours: WorkingHoursInput;
+}
+
+// Report related generated types
+export type ReportStatus = "PENDING" | "REVIEWED" | "RESOLVED";
+
+export interface CreateReportInput {
+  description: string;
+}
+
+export interface UpdateReportInput {
+  status?: ReportStatus;
+  description?: string;
+}
+
+export interface ReportFilters {
+  userId?: string;
+  status?: ReportStatus;
 }

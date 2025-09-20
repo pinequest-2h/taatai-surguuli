@@ -123,3 +123,66 @@ export interface ChatroomMessage {
   createdAt: string;
   updatedAt: string;
 }
+
+// Report Types
+export interface Report {
+  _id: string;
+  userId: User | null;
+  school?: string;
+  class?: string;
+  description: string;
+  status: 'PENDING' | 'REVIEWED' | 'RESOLVED';
+  anonymous?: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReportConnection {
+  edges: { node: Report; cursor: string }[];
+  pageInfo: {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    startCursor?: string;
+    endCursor?: string;
+  };
+  totalCount: number;
+}
+
+export interface CreateReportInput {
+  school: string;
+  class: string;
+  description: string;
+  anonymous: boolean;
+}
+
+export interface UpdateReportInput {
+  status?: 'PENDING' | 'REVIEWED' | 'RESOLVED';
+  description?: string;
+}
+
+export interface ReportFilters {
+  school?: string;
+  class?: string;
+  status?: 'PENDING' | 'REVIEWED' | 'RESOLVED';
+}
+
+// Report Response Types
+export interface CreateReportResponse {
+  createReport: Report;
+}
+
+export interface UpdateReportResponse {
+  updateReport: Report;
+}
+
+export interface GetReportsResponse {
+  getReports: ReportConnection;
+}
+
+export interface GetMyReportsResponse {
+  getMyReports: ReportConnection;
+}
+
+export interface GetReportByIdResponse {
+  getReportById: Report;
+}

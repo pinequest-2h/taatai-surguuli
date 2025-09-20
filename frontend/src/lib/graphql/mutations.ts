@@ -206,3 +206,52 @@ export const SUBMIT_FEEDBACK = gql`
     }
   }
 `;
+
+// Report Mutations
+export const CREATE_REPORT = gql`
+  mutation CreateReport($input: CreateReportInput!) {
+    createReport(input: $input) {
+      _id
+      userId {
+        _id
+        fullName
+        userName
+        email
+      }
+      school
+      class
+      description
+      status
+      anonymous
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_REPORT = gql`
+  mutation UpdateReport($_id: ID!, $input: UpdateReportInput!) {
+    updateReport(_id: $_id, input: $input) {
+      _id
+      userId {
+        _id
+        fullName
+        userName
+        email
+      }
+      school
+      class
+      description
+      status
+      anonymous
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_REPORT = gql`
+  mutation DeleteReport($_id: ID!) {
+    deleteReport(_id: $_id)
+  }
+`;

@@ -10,7 +10,9 @@ import {
   MessageCircle, 
   X, 
   Home, 
-  Users
+  Users,
+  FileText,
+  Shield
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -68,6 +70,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <Users className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
                   Сэтгэл судлаачид
                 </Link>
+                
+                {/* Report Navigation - Role-based */}
+                {user?.role === 'CHILD' && (
+                  <Link
+                    href="/reports"
+                    className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  >
+                    <FileText className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+                    Тайлан илгээх
+                  </Link>
+                )}
+                
+                {(user?.role === 'PSYCHOLOGIST' || user?.role === 'ADMIN') && (
+                  <Link
+                    href="/admin/reports"
+                    className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  >
+                    <Shield className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+                    Тайлан удирдах
+                  </Link>
+                )}
                 
                 <Link
                   href="/profile"

@@ -11,7 +11,7 @@ interface UpdatePsychologistProfileInput {
   email?: string;
 }
 
-// Update psychologist profile
+
 export const updatePsychologistProfile = async (
   _parent: unknown,
   { input }: { input: UpdatePsychologistProfileInput }
@@ -27,7 +27,7 @@ export const updatePsychologistProfile = async (
       });
     }
     
-    // Update the psychologist profile
+
     const updatedPsychologist = await User.findByIdAndUpdate(
       _id,
       { ...updateData, updatedAt: new Date() },
@@ -44,7 +44,7 @@ export const updatePsychologistProfile = async (
   } catch (error: unknown) {
     console.error("❌ UpdatePsychologistProfile Error:", error);
     
-    // Handle duplicate key errors
+
     if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
       if ('keyPattern' in error && error.keyPattern && typeof error.keyPattern === 'object' && 'email' in error.keyPattern) {
         throw new GraphQLError("Email already exists", {
