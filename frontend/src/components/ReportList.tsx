@@ -10,29 +10,59 @@ interface ReportListProps {
   showUser?: boolean;
   canEdit?: boolean;
   onStatusUpdate?: (reportId: string, status: string) => void;
+  showAllReports?: boolean; 
 }
 
 export default function ReportList({ 
   showUser = false, 
   canEdit = false, 
-  onStatusUpdate 
+  onStatusUpdate,
+  showAllReports = false
 }: ReportListProps) {
   const [filters, setFilters] = useState<ReportFilters>({});
   const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
 
-  const { data, loading, error, refetch } = useQuery<GetMyReportsResponse>(
+
+  const { data: myReportsData, loading: myReportsLoading, error: myReportsError, refetch: refetchMyReports } = useQuery<GetMyReportsResponse>(
     GET_MY_REPORTS,
     {
       variables: { limit, offset },
-      fetchPolicy: 'cache-and-network'
+      fetchPolicy: 'cache-and-network',
+      skip: showAllReports 
     }
   );
 
-  const reports = (data as GetMyReportsResponse)?.getMyReports?.edges?.map((edge) => edge.node) || [];
-  const totalCount = (data as GetMyReportsResponse)?.getMyReports?.totalCount || 0;
-  const hasNextPage = (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasNextPage;
-  const hasPreviousPage = (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasPreviousPage;
+  const { data: allReportsData, loading: allReportsLoading, error: allReportsError, refetch: refetchAllReports } = useQuery<GetReportsResponse>(
+    GET_REPORTS,
+    {
+      variables: { filters, limit, offset },
+      fetchPolicy: 'cache-and-network',
+      skip: !showAllReports // Skip this query if not showing all reports
+    }
+  );
+
+  // Use the appropriate data based on which query is active
+  const data = showAllReports ? allReportsData : myReportsData;
+  const loading = showAllReports ? allReportsLoading : myReportsLoading;
+  const error = showAllReports ? allReportsError : myReportsError;
+  const refetch = showAllReports ? refetchAllReports : refetchMyReports;
+
+  const reports = showAllReports 
+    ? (data as GetReportsResponse)?.getReports?.edges?.map((edge) => edge.node) || []
+    : (data as GetMyReportsResponse)?.getMyReports?.edges?.map((edge) => edge.node) || [];
+  
+  const totalCount = showAllReports
+    ? (data as GetReportsResponse)?.getReports?.totalCount || 0
+    : (data as GetMyReportsResponse)?.getMyReports?.totalCount || 0;
+    
+  const hasNextPage = showAllReports
+    ? (data as GetReportsResponse)?.getReports?.pageInfo?.hasNextPage
+    : (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasNextPage;
+    
+  const hasPreviousPage = showAllReports
+    ? (data as GetReportsResponse)?.getReports?.pageInfo?.hasPreviousPage
+    : (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasPreviousPage;
 
   const handleStatusFilter = (status: string) => {
     setFilters(prev => ({
@@ -81,9 +111,52 @@ export default function ReportList({
 
   return (
     <div className="space-y-6">
-      {/* Filters - removed since we're only showing user's own reports */}
 
-      {/* Reports List */}
+      {showAllReports && (
+        <div className="bg-white rounded-lg shadow-md p-4">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Reports</h3>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => handleStatusFilter('PENDING')}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                filters.status === 'PENDING'
+                  ? 'bg-yellow-100 text-yellow-800 border border-yellow-300'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Pending
+            </button>
+            <button
+              onClick={() => handleStatusFilter('REVIEWED')}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                filters.status === 'REVIEWED'
+                  ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Under Review
+            </button>
+            <button
+              onClick={() => handleStatusFilter('RESOLVED')}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                filters.status === 'RESOLVED'
+                  ? 'bg-green-100 text-green-800 border border-green-300'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Resolved
+            </button>
+            <button
+              onClick={() => setFilters({})}
+              className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      )}
+
+
       <div className="space-y-4">
         {reports.length === 0 ? (
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
@@ -105,7 +178,7 @@ export default function ReportList({
         )}
       </div>
 
-      {/* Pagination */}
+
       {totalCount > limit && (
         <div className="flex justify-between items-center bg-white rounded-lg shadow-md p-4">
           <div className="text-sm text-gray-600">

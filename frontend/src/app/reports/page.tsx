@@ -11,7 +11,7 @@ export default function ReportsPage() {
 
   const handleStatusUpdate = (reportId: string, status: string) => {
     console.log(`Updating report ${reportId} to status: ${status}`);
-    // The actual update will be handled by the ReportCard component
+        
   };
 
   if (!user) {
@@ -47,7 +47,7 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        {/* Tab Navigation */}
+        
         <div className="mb-8">
           <nav className="flex space-x-8">
             <button
@@ -73,7 +73,7 @@ export default function ReportsPage() {
           </nav>
         </div>
 
-        {/* Tab Content */}
+              
         {activeTab === 'submit' && (
           <div className="space-y-6">
             <ReportForm 
@@ -89,7 +89,7 @@ export default function ReportsPage() {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Reports</h2>
-              <ReportList canEdit={true} onStatusUpdate={handleStatusUpdate} />
+              <ReportList canEdit={false} onStatusUpdate={handleStatusUpdate} />
             </div>
           </div>
         )}
