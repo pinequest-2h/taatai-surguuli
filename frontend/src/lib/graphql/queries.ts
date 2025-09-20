@@ -386,8 +386,11 @@ export const GET_REPORTS = gql`
             email
             profileImage
           }
+          school
+          class
           description
           status
+          anonymous
           createdAt
           updatedAt
         }
@@ -415,17 +418,20 @@ export const GET_REPORT_BY_ID = gql`
         email
         profileImage
       }
+      school
+      class
       description
       status
+      anonymous
       createdAt
       updatedAt
     }
   }
 `;
 
-export const GET_USER_REPORTS = gql`
-  query GetUserReports($userId: ID!, $limit: Int, $offset: Int) {
-    getUserReports(userId: $userId, limit: $limit, offset: $offset) {
+export const GET_MY_REPORTS = gql`
+  query GetMyReports($limit: Int, $offset: Int) {
+    getMyReports(limit: $limit, offset: $offset) {
       edges {
         node {
           _id
@@ -436,8 +442,11 @@ export const GET_USER_REPORTS = gql`
             email
             profileImage
           }
+          school
+          class
           description
           status
+          anonymous
           createdAt
           updatedAt
         }

@@ -218,8 +218,11 @@ export const CREATE_REPORT = gql`
         userName
         email
       }
+      school
+      class
       description
       status
+      anonymous
       createdAt
       updatedAt
     }
@@ -236,8 +239,11 @@ export const UPDATE_REPORT = gql`
         userName
         email
       }
+      school
+      class
       description
       status
+      anonymous
       createdAt
       updatedAt
     }

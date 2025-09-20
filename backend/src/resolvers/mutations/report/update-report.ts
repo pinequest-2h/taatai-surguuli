@@ -1,4 +1,5 @@
 import { Report } from "@/models/Report";
+import { User } from "@/models/User";
 import { GraphQLError } from "graphql";
 
 export const updateReport = async (
@@ -13,6 +14,14 @@ export const updateReport = async (
       });
     }
 
+    // Check if user exists
+    const user = await User.findById(context.userId);
+    if (!user) {
+      throw new GraphQLError("User not found", {
+        extensions: { code: "USER_NOT_FOUND" },
+      });
+    }
+
     const report = await Report.findById(_id);
     if (!report) {
       throw new GraphQLError("Report not found", {
@@ -20,10 +29,10 @@ export const updateReport = async (
       });
     }
 
-    // Only allow the user who created the report or admin to update
-    if (report.userId.toString() !== context.userId) {
-      throw new GraphQLError("Unauthorized to update this report", {
-        extensions: { code: "UNAUTHORIZED" },
+    // Only ADMIN and PSYCHOLOGIST can update reports
+    if (user.role !== 'ADMIN' && user.role !== 'PSYCHOLOGIST') {
+      throw new GraphQLError("Only administrators and psychologists can update reports", {
+        extensions: { code: "INSUFFICIENT_PERMISSIONS" },
       });
     }
 
@@ -37,7 +46,13 @@ export const updateReport = async (
       { new: true }
     ).populate('userId', '_id fullName userName email');
 
-    return updatedReport?.toObject();
+    // If report is anonymous, hide user details
+    const reportObj = updatedReport?.toObject();
+    if (reportObj && report.anonymous) {
+      reportObj.userId = null;
+    }
+
+    return reportObj;
   } catch (error: unknown) {
     console.error("❌ UpdateReport Error:", error);
     if (error instanceof GraphQLError) {

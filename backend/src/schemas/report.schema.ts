@@ -9,9 +9,12 @@ export const reportTypeDefs = gql`
 
   type Report {
     _id: ID!
-    userId: User!
+    userId: User
+    school: String
+    class: String
     description: String!
     status: ReportStatus!
+    anonymous: Boolean
     createdAt: Date!
     updatedAt: Date!
   }
@@ -28,12 +31,16 @@ export const reportTypeDefs = gql`
   }
 
   input ReportFilters {
-    userId: ID
+    school: String
+    class: String
     status: ReportStatus
   }
 
   input CreateReportInput {
+    school: String!
+    class: String!
     description: String!
+    anonymous: Boolean!
   }
 
   input UpdateReportInput {
@@ -48,7 +55,7 @@ export const reportTypeDefs = gql`
       limit: Int
       offset: Int
     ): ReportConnection!
-    getUserReports(userId: ID!, limit: Int, offset: Int): ReportConnection!
+    getMyReports(limit: Int, offset: Int): ReportConnection!
   }
 
   extend type Mutation {

@@ -9,6 +9,11 @@ export default function ReportsPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'submit' | 'my-reports'>('submit');
 
+  const handleStatusUpdate = (reportId: string, status: string) => {
+    console.log(`Updating report ${reportId} to status: ${status}`);
+    // The actual update will be handled by the ReportCard component
+  };
+
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -20,7 +25,7 @@ export default function ReportsPage() {
     );
   }
 
-  // Only children can access this page
+
   if (user.role !== 'CHILD') {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -84,7 +89,7 @@ export default function ReportsPage() {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Reports</h2>
-              <ReportList userId={user._id} />
+              <ReportList canEdit={true} onStatusUpdate={handleStatusUpdate} />
             </div>
           </div>
         )}

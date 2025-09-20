@@ -55,17 +55,20 @@ function addCorsHeaders(response: Response, origin: string | null): Response {
   const allowedOrigins = envList.length > 0 ? envList : defaultOrigins;
 
   const isVercelPreview = (o: string): boolean => /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(o);
+  const isLocalhost = (o: string): boolean => /^http:\/\/localhost:\d+$/.test(o);
 
   if (origin) {
-    if (allowedOrigins.includes(origin) || isVercelPreview(origin)) {
+    if (allowedOrigins.includes(origin) || isVercelPreview(origin) || isLocalhost(origin)) {
       response.headers.set('Access-Control-Allow-Origin', origin);
+      console.log(`CORS: Allowing origin ${origin}`);
     } else {
       // If origin is provided but not allowed, don't set any origin header
       console.warn(`CORS: Origin ${origin} not allowed. Allowed origins:`, allowedOrigins);
     }
   } else {
-    // If no origin provided, allow localhost:3000 by default for development
+
     response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    console.log('CORS: No origin provided, defaulting to localhost:3000');
   }
 
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

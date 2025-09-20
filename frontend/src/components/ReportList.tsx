@@ -2,19 +2,17 @@
 
 import { useState } from 'react';
 import { useQuery } from '@apollo/client/react';
-import { GET_REPORTS, GET_USER_REPORTS } from '@/lib/graphql/queries';
-import { Report, ReportFilters, GetReportsResponse, GetUserReportsResponse } from '@/types/graphql';
+import { GET_REPORTS, GET_MY_REPORTS } from '@/lib/graphql/queries';
+import { Report, ReportFilters, GetReportsResponse, GetMyReportsResponse } from '@/types/graphql';
 import ReportCard from './ReportCard';
 
 interface ReportListProps {
-  userId?: string;
   showUser?: boolean;
   canEdit?: boolean;
   onStatusUpdate?: (reportId: string, status: string) => void;
 }
 
 export default function ReportList({ 
-  userId, 
   showUser = false, 
   canEdit = false, 
   onStatusUpdate 
@@ -23,31 +21,18 @@ export default function ReportList({
   const [limit] = useState(10);
   const [offset, setOffset] = useState(0);
 
-  const { data, loading, error, refetch } = useQuery<GetReportsResponse | GetUserReportsResponse>(
-    userId ? GET_USER_REPORTS : GET_REPORTS,
+  const { data, loading, error, refetch } = useQuery<GetMyReportsResponse>(
+    GET_MY_REPORTS,
     {
-      variables: userId 
-        ? { userId, limit, offset }
-        : { filters, limit, offset },
+      variables: { limit, offset },
       fetchPolicy: 'cache-and-network'
     }
   );
 
-  const reports = userId 
-    ? (data as GetUserReportsResponse)?.getUserReports?.edges?.map((edge) => edge.node) || []
-    : (data as GetReportsResponse)?.getReports?.edges?.map((edge) => edge.node) || [];
-
-  const totalCount = userId 
-    ? (data as GetUserReportsResponse)?.getUserReports?.totalCount || 0
-    : (data as GetReportsResponse)?.getReports?.totalCount || 0;
-
-  const hasNextPage = userId 
-    ? (data as GetUserReportsResponse)?.getUserReports?.pageInfo?.hasNextPage
-    : (data as GetReportsResponse)?.getReports?.pageInfo?.hasNextPage;
-
-  const hasPreviousPage = userId 
-    ? (data as GetUserReportsResponse)?.getUserReports?.pageInfo?.hasPreviousPage
-    : (data as GetReportsResponse)?.getReports?.pageInfo?.hasPreviousPage;
+  const reports = (data as GetMyReportsResponse)?.getMyReports?.edges?.map((edge) => edge.node) || [];
+  const totalCount = (data as GetMyReportsResponse)?.getMyReports?.totalCount || 0;
+  const hasNextPage = (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasNextPage;
+  const hasPreviousPage = (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasPreviousPage;
 
   const handleStatusFilter = (status: string) => {
     setFilters(prev => ({
@@ -96,47 +81,16 @@ export default function ReportList({
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      {!userId && (
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-3">Filter Reports</h3>
-          <div className="flex space-x-2">
-            {['PENDING', 'REVIEWED', 'RESOLVED'].map((status) => (
-              <button
-                key={status}
-                onClick={() => handleStatusFilter(status)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  filters.status === status
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {status === 'PENDING' ? 'Pending' : 
-                 status === 'REVIEWED' ? 'Under Review' : 'Resolved'}
-              </button>
-            ))}
-            {filters.status && (
-              <button
-                onClick={() => setFilters({})}
-                className="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Filters - removed since we're only showing user's own reports */}
 
       {/* Reports List */}
       <div className="space-y-4">
         {reports.length === 0 ? (
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
             <p className="text-gray-500 text-lg">No reports found</p>
-            {userId && (
-              <p className="text-gray-400 text-sm mt-2">
-                You haven&apos;t submitted any reports yet.
-              </p>
-            )}
+            <p className="text-gray-400 text-sm mt-2">
+              You haven&apos;t submitted any reports yet.
+            </p>
           </div>
         ) : (
           reports.map((report: Report) => (

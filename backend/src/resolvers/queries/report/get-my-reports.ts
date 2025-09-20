@@ -2,13 +2,9 @@ import { Report } from "@/models/Report";
 import { User } from "@/models/User";
 import { GraphQLError } from "graphql";
 
-export const getReports = async (
+export const getMyReports = async (
   _parent: unknown,
-  { filters, limit = 10, offset = 0 }: { 
-    filters?: { school?: string; class?: string; status?: string }; 
-    limit?: number; 
-    offset?: number 
-  },
+  { limit = 10, offset = 0 }: { limit?: number; offset?: number },
   context: { userId?: string }
 ) => {
   try {
@@ -18,7 +14,7 @@ export const getReports = async (
       });
     }
 
-    // Check if user exists and has permission
+    // Check if user exists and has CHILD role
     const user = await User.findById(context.userId);
     if (!user) {
       throw new GraphQLError("User not found", {
@@ -26,41 +22,24 @@ export const getReports = async (
       });
     }
 
-    // Only ADMIN and PSYCHOLOGIST can see all reports
-    if (user.role !== 'ADMIN' && user.role !== 'PSYCHOLOGIST') {
-      throw new GraphQLError("Only administrators and psychologists can view all reports", {
+    if (user.role !== 'CHILD') {
+      throw new GraphQLError("Only children can view their own reports", {
         extensions: { code: "INSUFFICIENT_PERMISSIONS" },
       });
     }
 
-    const query: { school?: string; class?: string; status?: string } = {};
-    
-    if (filters?.school) {
-      query.school = filters.school;
-    }
-    
-    if (filters?.class) {
-      query.class = filters.class;
-    }
-    
-    if (filters?.status) {
-      query.status = filters.status;
-    }
-
-    const reports = await Report.find(query)
+    const reports = await Report.find({ userId: context.userId })
       .populate('userId', '_id fullName userName email')
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(offset);
 
-    const totalCount = await Report.countDocuments(query);
+    const totalCount = await Report.countDocuments({ userId: context.userId });
 
     const edges = reports.map((report) => {
       const reportObj = report.toObject();
-      
-      if (report.anonymous) {
-        reportObj.userId = null;
-      }
+      // For child's own reports, always show user details even if anonymous
+      // (they should be able to see their own reports)
       return {
         node: reportObj,
         cursor: report._id?.toString() || '',
@@ -78,12 +57,12 @@ export const getReports = async (
       totalCount,
     };
   } catch (error: unknown) {
-    console.error("❌ GetReports Error:", error);
+    console.error("❌ GetMyReports Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
-    throw new GraphQLError("Failed to fetch reports", {
-      extensions: { code: "GET_REPORTS_FAILED" },
+    throw new GraphQLError("Failed to fetch user reports", {
+      extensions: { code: "GET_MY_REPORTS_FAILED" },
     });
   }
 };

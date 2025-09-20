@@ -127,9 +127,12 @@ export interface ChatroomMessage {
 // Report Types
 export interface Report {
   _id: string;
-  userId: User;
+  userId: User | null;
+  school?: string;
+  class?: string;
   description: string;
   status: 'PENDING' | 'REVIEWED' | 'RESOLVED';
+  anonymous?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -146,7 +149,10 @@ export interface ReportConnection {
 }
 
 export interface CreateReportInput {
+  school: string;
+  class: string;
   description: string;
+  anonymous: boolean;
 }
 
 export interface UpdateReportInput {
@@ -155,7 +161,8 @@ export interface UpdateReportInput {
 }
 
 export interface ReportFilters {
-  userId?: string;
+  school?: string;
+  class?: string;
   status?: 'PENDING' | 'REVIEWED' | 'RESOLVED';
 }
 
@@ -172,8 +179,8 @@ export interface GetReportsResponse {
   getReports: ReportConnection;
 }
 
-export interface GetUserReportsResponse {
-  getUserReports: ReportConnection;
+export interface GetMyReportsResponse {
+  getMyReports: ReportConnection;
 }
 
 export interface GetReportByIdResponse {

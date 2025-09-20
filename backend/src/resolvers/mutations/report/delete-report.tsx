@@ -1,4 +1,5 @@
 import { Report } from "@/models/Report";
+import { User } from "@/models/User";
 import { GraphQLError } from "graphql";
 
 export const deleteReport = async (
@@ -13,6 +14,14 @@ export const deleteReport = async (
       });
     }
 
+    // Check if user exists
+    const user = await User.findById(context.userId);
+    if (!user) {
+      throw new GraphQLError("User not found", {
+        extensions: { code: "USER_NOT_FOUND" },
+      });
+    }
+
     const report = await Report.findById(_id);
     if (!report) {
       throw new GraphQLError("Report not found", {
@@ -20,10 +29,10 @@ export const deleteReport = async (
       });
     }
 
-    // Only allow the user who created the report or admin to delete
-    if (report.userId.toString() !== context.userId) {
-      throw new GraphQLError("Unauthorized to delete this report", {
-        extensions: { code: "UNAUTHORIZED" },
+    // Only ADMIN and PSYCHOLOGIST can delete reports
+    if (user.role !== 'ADMIN' && user.role !== 'PSYCHOLOGIST') {
+      throw new GraphQLError("Only administrators and psychologists can delete reports", {
+        extensions: { code: "INSUFFICIENT_PERMISSIONS" },
       });
     }
 

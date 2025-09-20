@@ -4,7 +4,7 @@ import { getUserById } from "./user/get-user-by-id";
 import { getChatrooms, getChatroomById, getChatroomMessages, getOrCreateChatroom } from "./chatroom/get-chatrooms";
 import { getReports } from "./report/get-reports";
 import { getReportById } from "./report/get-report-by-id";
-import { getUserReports } from "./report/get-user-reports";
+import { getMyReports } from "./report/get-my-reports";
 
 export const Query = {
   hello: () => "Hello from GraphQL!",
@@ -21,5 +21,5 @@ export const Query = {
   getOrCreateChatroom,
   getReports,
   getReportById,
-  getUserReports,
+  getMyReports,
 };
