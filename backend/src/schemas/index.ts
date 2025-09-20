@@ -7,8 +7,9 @@ import { messageTypeDefs } from "./message.schema";
 import { feedbackTypeDefs } from "./feedback.schema";
 import { psychologistTypeDefs } from "./psychologist.schema";
 import { childTypeDefs } from "./child.schema";
-import { followTypeDefs } from "./follow.schema";
+
 import { chatroomTypeDefs } from "./chatroom.schema";
+import { reportTypeDefs } from "./report.schema";
 
 export const typeDefs = mergeTypeDefs([
   commonTypeDefs,
@@ -18,6 +19,6 @@ export const typeDefs = mergeTypeDefs([
   feedbackTypeDefs,
   psychologistTypeDefs,
   childTypeDefs,
-  followTypeDefs,
+  reportTypeDefs,
   chatroomTypeDefs,
 ]);
