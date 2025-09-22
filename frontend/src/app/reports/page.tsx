@@ -48,7 +48,6 @@ export default function ReportsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-3">
             Таны Тайлангууд 📝
@@ -87,23 +86,11 @@ export default function ReportsPage() {
         </div>
 
         {activeTab === "submit" && (
-          <div className="space-y-6">
-            <div className="bg-white shadow-md rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                Шинэ Тайлан
-              </h2>
-              <p className="text-gray-600 mb-6 text-sm">
-                Та юу мэдэрч байгаагаа, ямар асуудалтай тулгарч байгаагаа
-                дэлгэрэнгүй бичиж илгээгээрэй. Энэ нь танд тусламж авах эхний
-                алхам юм.
-              </p>
-              <ReportForm
-                onSuccess={() => setActiveTab("my-reports")}
-              />
-            </div>
+          <div className="p-6">
+            <ReportForm onSuccess={() => setActiveTab("my-reports")} />
           </div>
         )}
-  
+
         {activeTab === "my-reports" && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-md p-6">
