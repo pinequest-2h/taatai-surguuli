@@ -23,7 +23,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
   const [isComplete, setIsComplete] = React.useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Sync with external value
+
   useEffect(() => {
     if (value !== otp) {
       setOtp(value);
@@ -31,12 +31,12 @@ const OTPInput: React.FC<OTPInputProps> = ({
     }
   }, [value, length, otp]);
 
-  // Notify parent when OTP changes
+
   useEffect(() => {
     onChange?.(otp);
   }, [otp, onChange]);
 
-  // Notify parent when OTP is complete
+
   useEffect(() => {
     if (isComplete) {
       onComplete?.(otp);
@@ -51,19 +51,19 @@ const OTPInput: React.FC<OTPInputProps> = ({
     setOtp(updatedOtp);
     setIsComplete(updatedOtp.length === length);
 
-    // Auto-focus next input
+
     if (value && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    // Handle backspace
+
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
     
-    // Handle paste
+
     if (e.key === 'v' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       navigator.clipboard.readText().then(text => {
@@ -71,7 +71,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
         setOtp(pastedOtp);
         setIsComplete(pastedOtp.length === length);
         
-        // Focus the last filled input
+
         const lastIndex = Math.min(pastedOtp.length - 1, length - 1);
         inputRefs.current[lastIndex]?.focus();
       });
@@ -79,7 +79,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
   };
 
   const handleFocus = (index: number) => {
-    // Select all text when focusing
+
     inputRefs.current[index]?.select();
   };
 
