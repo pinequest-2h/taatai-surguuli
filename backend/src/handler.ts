@@ -51,14 +51,15 @@ function addCorsHeaders(response: Response, origin: string | null): Response {
     .map(o => o.trim())
     .filter(Boolean);
 
-  const defaultOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+  const defaultOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
   const allowedOrigins = envList.length > 0 ? envList : defaultOrigins;
 
   const isVercelPreview = (o: string): boolean => /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(o);
+  const isRenderPreview = (o: string): boolean => /^https:\/\/[a-z0-9-]+\.onrender\.com$/i.test(o);
   const isLocalhost = (o: string): boolean => /^http:\/\/localhost:\d+$/.test(o);
 
   if (origin) {
-    if (allowedOrigins.includes(origin) || isVercelPreview(origin) || isLocalhost(origin)) {
+    if (allowedOrigins.includes(origin) || isVercelPreview(origin) || isRenderPreview(origin) || isLocalhost(origin)) {
       response.headers.set('Access-Control-Allow-Origin', origin);
       console.log(`CORS: Allowing origin ${origin}`);
     } else {
@@ -66,9 +67,14 @@ function addCorsHeaders(response: Response, origin: string | null): Response {
       console.warn(`CORS: Origin ${origin} not allowed. Allowed origins:`, allowedOrigins);
     }
   } else {
-
-    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
-    console.log('CORS: No origin provided, defaulting to localhost:3000');
+    // In production, allow all origins if no origin is specified
+    if (process.env.NODE_ENV === 'production') {
+      response.headers.set('Access-Control-Allow-Origin', '*');
+      console.log('CORS: Production mode, allowing all origins');
+    } else {
+      response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+      console.log('CORS: No origin provided, defaulting to localhost:3000');
+    }
   }
 
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');

@@ -38,11 +38,10 @@ export default function ReportList({
     {
       variables: { filters, limit, offset },
       fetchPolicy: 'cache-and-network',
-      skip: !showAllReports // Skip this query if not showing all reports
+      skip: !showAllReports 
     }
   );
 
-  // Use the appropriate data based on which query is active
   const data = showAllReports ? allReportsData : myReportsData;
   const loading = showAllReports ? allReportsLoading : myReportsLoading;
   const error = showAllReports ? allReportsError : myReportsError;

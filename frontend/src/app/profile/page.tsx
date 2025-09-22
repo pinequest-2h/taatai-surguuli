@@ -57,7 +57,7 @@ interface UpdateUserResponse {
 }
 
 const ProfilePage = () => {
-  const { user: currentUser, logout, isAuthenticated, isLoading } = useAuth();
+  const { user: currentUser, logout, updateUser: updateAuthUser, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -71,7 +71,7 @@ const ProfilePage = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data, loading } = useQuery<GetUserByIdResponse>(GET_USER_BY_ID, {
+  const { data, loading, refetch } = useQuery<GetUserByIdResponse>(GET_USER_BY_ID, {
     variables: { _id: currentUser?._id },
     skip: !currentUser?._id,
   });
@@ -125,16 +125,28 @@ const ProfilePage = () => {
     setError('');
     setIsSubmitting(true);
 
+    // Basic validation
+    if (!formData.fullName.trim()) {
+      setError('Full name is required');
+      setIsSubmitting(false);
+      return;
+    }
+    if (!formData.userName.trim()) {
+      setError('Username is required');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const { data: updateData } = await updateUser({
         variables: {
           _id: currentUser?._id,
           input: {
-            fullName: formData.fullName,
-            userName: formData.userName,
-            email: formData.email || undefined,
-            phoneNumber: formData.phoneNumber || undefined,
-            bio: formData.bio || undefined,
+            fullName: formData.fullName.trim(),
+            userName: formData.userName.trim(),
+            email: formData.email?.trim() || undefined,
+            phoneNumber: formData.phoneNumber?.trim() || undefined,
+            bio: formData.bio?.trim() || undefined,
             gender: formData.gender,
           },
         },
@@ -143,7 +155,9 @@ const ProfilePage = () => {
       if (updateData?.updateUser) {
         setIsEditing(false);
         // Update the auth context with new user data
-        // This would typically be handled by refetching the user data
+        updateAuthUser(updateData.updateUser);
+        // Show success message
+        alert('✅ Profile updated successfully!');
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to update profile. Please try again.');
