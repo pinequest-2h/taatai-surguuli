@@ -29,7 +29,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
       setOtp(value);
       setIsComplete(value.length === length);
     }
-  }, [value, length]);
+  }, [value, length, otp]);
 
   // Notify parent when OTP changes
   useEffect(() => {
@@ -88,7 +88,9 @@ const OTPInput: React.FC<OTPInputProps> = ({
       {Array.from({ length }, (_, index) => (
         <input
           key={index}
-          ref={(el) => (inputRefs.current[index] = el)}
+          ref={(el) => {
+            inputRefs.current[index] = el;
+          }}
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"

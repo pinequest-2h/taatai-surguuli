@@ -33,8 +33,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
     error,
     success,
     sendEmailVerification,
-    verifyEmail,
-    clearMessages
+    verifyEmail
   } = useEmail({
     onSuccess: (message) => {
       if (message.includes('verified')) {
@@ -49,7 +48,6 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
     }
   });
 
-  // Countdown timer
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -66,7 +64,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
 
   const handleResendCode = async () => {
     await sendEmailVerification(email);
-    setTimeLeft(60); // 60 seconds cooldown
+    setTimeLeft(60);
   };
 
   const handleOTPChange = (newOtp: string) => {
@@ -101,7 +99,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
           </h2>
           
           <p className="mt-2 text-sm text-gray-600">
-            We've sent a verification code to
+            We&apos;ve sent a verification code to
           </p>
           <p className="text-sm font-medium text-blue-600">
             {email}
@@ -166,7 +164,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
         {/* Resend Code */}
         <div className="text-center">
           <p className="text-sm text-gray-600 mb-2">
-            Didn't receive the code?
+            Didn&apos;t receive the code?
           </p>
           <button
             onClick={handleResendCode}
