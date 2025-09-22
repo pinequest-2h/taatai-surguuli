@@ -54,17 +54,31 @@ function addCorsHeaders(response: Response, origin: string | null): Response {
   const defaultOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
   const allowedOrigins = envList.length > 0 ? envList : defaultOrigins;
 
-  const isVercelPreview = (o: string): boolean => /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(o);
+  const isVercelPreview = (o: string): boolean => {
+    const vercelPattern = /^https:\/\/[a-z0-9-]+\.vercel\.app$/i;
+    const isVercel = vercelPattern.test(o);
+    console.log(`CORS: Checking Vercel pattern for ${o}: ${isVercel}`);
+    return isVercel;
+  };
+  
   const isRenderPreview = (o: string): boolean => /^https:\/\/[a-z0-9-]+\.onrender\.com$/i.test(o);
   const isLocalhost = (o: string): boolean => /^http:\/\/localhost:\d+$/.test(o);
 
+  console.log(`CORS: Received origin: ${origin}`);
+
   if (origin) {
-    if (allowedOrigins.includes(origin) || isVercelPreview(origin) || isRenderPreview(origin) || isLocalhost(origin)) {
+    const isAllowed = allowedOrigins.includes(origin) || 
+                     isVercelPreview(origin) || 
+                     isRenderPreview(origin) || 
+                     isLocalhost(origin);
+    
+    if (isAllowed) {
       response.headers.set('Access-Control-Allow-Origin', origin);
-      console.log(`CORS: Allowing origin ${origin}`);
+      console.log(`CORS: ✅ Allowing origin ${origin}`);
     } else {
       // If origin is provided but not allowed, don't set any origin header
-      console.warn(`CORS: Origin ${origin} not allowed. Allowed origins:`, allowedOrigins);
+      console.warn(`CORS: ❌ Origin ${origin} not allowed. Allowed origins:`, allowedOrigins);
+      console.warn(`CORS: Vercel check: ${isVercelPreview(origin)}, Render check: ${isRenderPreview(origin)}, Localhost check: ${isLocalhost(origin)}`);
     }
   } else {
     // In production, allow all origins if no origin is specified
