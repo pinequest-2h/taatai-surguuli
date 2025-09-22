@@ -56,6 +56,7 @@ export const reportTypeDefs = gql`
       offset: Int
     ): ReportConnection!
     getMyReports(limit: Int, offset: Int): ReportConnection!
+    getPsychologistReports(limit: Int, offset: Int): ReportConnection!
   }
 
   extend type Mutation {

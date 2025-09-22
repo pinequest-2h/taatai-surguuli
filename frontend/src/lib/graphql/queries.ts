@@ -462,3 +462,37 @@ export const GET_MY_REPORTS = gql`
     }
   }
 `;
+
+export const GET_PSYCHOLOGIST_REPORTS = gql`
+  query GetPsychologistReports($limit: Int, $offset: Int) {
+    getPsychologistReports(limit: $limit, offset: $offset) {
+      edges {
+        node {
+          _id
+          userId {
+            _id
+            fullName
+            userName
+            email
+            profileImage
+          }
+          school
+          class
+          description
+          status
+          anonymous
+          createdAt
+          updatedAt
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+`;

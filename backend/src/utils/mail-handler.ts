@@ -23,13 +23,13 @@ export const sendOTPEmail = async (email: string, otp: string): Promise<void> =>
 
   try {
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'noreply@instagram.com',
+      from: process.env.SMTP_FROM || 'noreply@erulsetegel.com',
       to: email,
-      subject: 'Password Reset OTP - Instagram',
+      subject: 'Password Reset OTP - Eruul setegel',
       html: `
         <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #E4405F; margin: 0;">Instagram Clone</h1>
+            <h1 style="color: #E4405F; margin: 0;">Eruul setegel</h1>
           </div>
           
           <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
@@ -51,7 +51,7 @@ export const sendOTPEmail = async (email: string, otp: string): Promise<void> =>
           </div>
           
           <div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
-            <p>© 2024 Instagram Clone. All rights reserved.</p>
+            <p>© 2024 Eruul setegel. All rights reserved.</p>
           </div>
         </div>
       `,
@@ -79,13 +79,13 @@ export const sendVerificationEmail = async (email: string, otp: string): Promise
 
   try {
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'noreply@instagram.com',
+      from: process.env.SMTP_FROM || 'noreply@erulsetegel.com',
       to: email,
-      subject: 'Email Verification - Instagram',
+      subject: 'Email Verification - Eruul setegel',
       html: `
         <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #E4405F; margin: 0;">Instagram Clone</h1>
+            <h1 style="color: #E4405F; margin: 0;">Eruul setegel</h1>
           </div>
           
           <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
@@ -107,7 +107,7 @@ export const sendVerificationEmail = async (email: string, otp: string): Promise
           </div>
           
           <div style="text-align: center; margin-top: 30px; color: #999; font-size: 12px;">
-            <p>© 2024 Instagram Clone. All rights reserved.</p>
+            <p>© 2024 Eruul setegel. All rights reserved.</p>
           </div>
         </div>
       `,
@@ -117,7 +117,7 @@ export const sendVerificationEmail = async (email: string, otp: string): Promise
     console.log(`Verification email sent to ${email}`);
   } catch (error) {
     console.error('Error sending verification email:', error);
-    // Don't throw GraphQLError - let the caller handle the error
+
     throw error;
   }
 };

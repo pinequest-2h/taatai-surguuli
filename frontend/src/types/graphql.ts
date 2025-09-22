@@ -183,6 +183,10 @@ export interface GetMyReportsResponse {
   getMyReports: ReportConnection;
 }
 
+export interface GetPsychologistReportsResponse {
+  getPsychologistReports: ReportConnection;
+}
+
 export interface GetReportByIdResponse {
   getReportById: Report;
 }

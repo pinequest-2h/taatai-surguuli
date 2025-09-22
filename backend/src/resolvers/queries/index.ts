@@ -5,6 +5,7 @@ import { getChatrooms, getChatroomById, getChatroomMessages, getOrCreateChatroom
 import { getReports } from "./report/get-reports";
 import { getReportById } from "./report/get-report-by-id";
 import { getMyReports } from "./report/get-my-reports";
+import { getPsychologistReports } from "./report/get-psychologist-reports";
 
 export const Query = {
   hello: () => "Hello from GraphQL!",
@@ -22,4 +23,5 @@ export const Query = {
   getReports,
   getReportById,
   getMyReports,
+  getPsychologistReports,
 };
