@@ -25,6 +25,48 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Calming animated mesh background */
+.calm-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(1200px 800px at 10% 10%, rgba(99, 102, 241, 0.08), transparent 60%),
+              radial-gradient(1000px 700px at 90% 20%, rgba(16, 185, 129, 0.07), transparent 60%),
+              radial-gradient(900px 900px at 50% 120%, rgba(236, 72, 153, 0.06), transparent 60%),
+              linear-gradient(180deg, #f5f7fb 0%, #eef2ff 50%, #f5f7fb 100%);
+  filter: saturate(1.1);
+}
+
+.calm-blob {
+  position: absolute;
+  width: 36rem;
+  height: 36rem;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.35;
+  animation: float-soft 18s ease-in-out infinite;
+}
+
+.calm-blob--blue { background: radial-gradient(circle at 30% 30%, rgba(59,130,246,0.35), rgba(99,102,241,0.2)); }
+.calm-blob--green { background: radial-gradient(circle at 70% 40%, rgba(16,185,129,0.35), rgba(52,211,153,0.18)); }
+.calm-blob--pink { background: radial-gradient(circle at 50% 50%, rgba(236,72,153,0.35), rgba(244,114,182,0.18)); }
+
+.calm-noise {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 0 0 0 0 0.03 0 0 0 0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+  opacity: 0.08;
+}
+
+@keyframes float-soft {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -24px, 0) scale(1.03); }
+}
+
 /* Kid-friendly custom styles */
 @layer base {
   /* Smooth scrolling */
@@ -68,6 +110,46 @@ body {
   
   .card-gradient {
     @apply bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100 p-6;
+  }
+  /* Soothing glassy feature card */
+  .calm-card {
+    @apply relative rounded-2xl bg-white/70 backdrop-blur-md border border-slate-200/60 shadow-sm p-6 transition-all duration-300;
+  }
+  .calm-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  }
+  .calm-card-header {
+    @apply flex items-center gap-3 mb-3;
+  }
+  .calm-card-title {
+    @apply text-lg font-semibold text-slate-900;
+    letter-spacing: 0.1px;
+  }
+  .calm-card-text {
+    @apply text-slate-600;
+    line-height: 1.7;
+  }
+  .calm-icon-ring {
+    position: relative;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06), 0 10px 20px rgba(15, 23, 42, 0.04);
+  }
+  .calm-icon-ring::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: inherit;
+    background: conic-gradient(from 180deg, rgba(99,102,241,0.25), rgba(16,185,129,0.25), rgba(236,72,153,0.25), rgba(99,102,241,0.25));
+    filter: blur(10px);
+    opacity: 0.6;
+    z-index: -1;
   }
   
   /* Input styles */
@@ -160,6 +242,11 @@ body {
       transform: translateY(-10px);
     }
   }
+  @keyframes fade-up-soft {
+    0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .animate-fade-up-soft { animation: fade-up-soft 700ms cubic-bezier(.22,1,.36,1) both; }
   
   /* Text utilities */
   .text-shadow {

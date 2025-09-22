@@ -58,33 +58,39 @@ const HomePage = () => {
       </div>
 
       <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Heart className="h-6 w-6 text-blue-600" />
+        <div className="calm-card animate-fade-up-soft" style={{ animationDelay: '0ms' }}>
+          <div className="calm-card-header justify-center">
+            <span className="calm-icon-ring">
+              <Heart className="h-6 w-6 text-blue-600" />
+            </span>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Хүүхдэд зориулсан арчилгаа</h3>
-          <p className="text-gray-600">
-            Хүүхдүүд болон өсвөр насны хүмүүст зориулсан насны тохиргоотой арга барилаар тусгайлан бэлтгэсэн дэмжлэг.
+          <h3 className="calm-card-title text-center">Хүүхдэд зориулсан арчилгаа</h3>
+          <p className="calm-card-text text-center">
+            Зөөлөн, насанд тохирсон арга барилаар хүүхэд бүрийн аюулгүй орчныг дэмжинэ.
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Brain className="h-6 w-6 text-green-600" />
+        <div className="calm-card animate-fade-up-soft" style={{ animationDelay: '120ms' }}>
+          <div className="calm-card-header justify-center">
+            <span className="calm-icon-ring">
+              <Brain className="h-6 w-6 text-green-600" />
+            </span>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Мэргэжлийн сэтгэл судлаачид</h3>
-          <p className="text-gray-600">
-            Хүүхдүүд болон гэр бүлийн эмчилгээнд мэргэшсэн лицензтэй, туршлагатай сэтгэл судлаачтай холбогдоорой.
+          <h3 className="calm-card-title text-center">Мэргэжлийн сэтгэл судлаачид</h3>
+          <p className="calm-card-text text-center">
+            Лицензтэй мэргэжилтнүүдтэй шууд холбогдон, итгэлтэйгээр тусламж аваарай.
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Shield className="h-6 w-6 text-purple-600" />
+        <div className="calm-card animate-fade-up-soft" style={{ animationDelay: '240ms' }}>
+          <div className="calm-card-header justify-center">
+            <span className="calm-icon-ring">
+              <Shield className="h-6 w-6 text-purple-600" />
+            </span>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Аюулгүй ба найдвартай</h3>
-          <p className="text-gray-600">
-            Таны хувийн нууц болон аюулгүй байдал бидний хамгийн чухал зорилго бөгөөд шифрлэгдсэн харилцаа болон аюулгүй сешнүүдтэй.
+          <h3 className="calm-card-title text-center">Аюулгүй ба найдвартай</h3>
+          <p className="calm-card-text text-center">
+            Таны нууцлал, аюулгүй байдал нэн тэргүүнд—шифрлэгдсэн харилцаа, найдвартай сешнүүд.
           </p>
         </div>
       </div>

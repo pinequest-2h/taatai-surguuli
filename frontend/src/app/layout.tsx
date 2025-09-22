@@ -30,6 +30,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <div className="calm-bg" aria-hidden="true">
+          <div className="calm-blob calm-blob--blue" style={{ top: '-8rem', left: '-6rem' }} />
+          <div className="calm-blob calm-blob--green" style={{ top: '20%', right: '-10rem', animationDelay: '2s' }} />
+          <div className="calm-blob calm-blob--pink" style={{ bottom: '-10rem', left: '20%', animationDelay: '4s' }} />
+          <div className="calm-noise" />
+        </div>
         <ApolloWrapper>
           <AuthProvider>
             <LayoutWrapper>

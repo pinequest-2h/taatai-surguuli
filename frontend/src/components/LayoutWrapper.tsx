@@ -21,7 +21,7 @@ const LayoutWrapper: React.FC<LayoutWrapperProps> = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex">
+    <div className="min-h-screen flex relative z-0">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
       {/* Main content */}
