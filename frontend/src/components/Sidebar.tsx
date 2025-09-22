@@ -82,7 +82,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   </Link>
                 )}
                 
-                {(user?.role === 'PSYCHOLOGIST' || user?.role === 'ADMIN') && (
+                {user?.role === 'PSYCHOLOGIST' && (
+                  <Link
+                    href="/psychologist/reports"
+                    className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  >
+                    <FileText className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+                    Миний тайлан
+                  </Link>
+                )}
+                
+                {user?.role === 'ADMIN' && (
                   <Link
                     href="/admin/reports"
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"

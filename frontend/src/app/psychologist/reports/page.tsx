@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { UPDATE_REPORT } from '@/lib/graphql/mutations';
 import ReportList from '@/components/ReportList';
 
-export default function AdminReportsPage() {
+export default function PsychologistReportsPage() {
   const { user } = useAuth();
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
@@ -31,13 +31,12 @@ export default function AdminReportsPage() {
     );
   }
 
-
-  if (user.role !== 'ADMIN') {
+  if (user.role !== 'PSYCHOLOGIST') {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
-          <p className="text-gray-600">Only administrators can access this page.</p>
+          <p className="text-gray-600">Only psychologists can access this page.</p>
         </div>
       </div>
     );
@@ -61,9 +60,9 @@ export default function AdminReportsPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Report Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Psychologist Reports</h1>
           <p className="text-gray-600">
-            Administrative overview of all reports. Assign reports to psychologists and monitor system-wide activity.
+            Review and manage reports assigned to you. Update their status as you work on them.
           </p>
         </div>
 
@@ -115,16 +114,17 @@ export default function AdminReportsPage() {
         {/* Reports List */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">All System Reports</h2>
+            <h2 className="text-xl font-semibold text-gray-900">My Assigned Reports</h2>
             <div className="text-sm text-gray-500">
-              Administrator View
+              Psychologist View
             </div>
           </div>
           
           <ReportList 
             showUser={true}
             canEdit={true}
-            showAllReports={true}
+            showAllReports={false}
+            psychologistView={true}
             onStatusUpdate={handleStatusUpdate}
           />
           

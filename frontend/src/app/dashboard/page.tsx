@@ -42,20 +42,13 @@ const DashboardPage = () => {
     );
   }
 
-  // At this point, we know user is not null due to the authentication check
-  if (!user) {
-    return null; // This should never happen due to the check above
-  }
+  if (!user) return null;
 
   const chatrooms = chatroomsData?.getChatrooms || [];
   const recentChatrooms = chatrooms.slice(0, 3);
 
   const getOtherParticipant = (chatroom: Chatroom) => {
-    if (user.role === "CHILD") {
-      return chatroom.psychologist;
-    } else {
-      return chatroom.child;
-    }
+    return user.role === "CHILD" ? chatroom.psychologist : chatroom.child;
   };
 
   const formatTime = (dateString: string) => {
@@ -63,13 +56,9 @@ const DashboardPage = () => {
     const now = new Date();
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
-    if (diffInHours < 1) {
-      return "Саяхан";
-    } else if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)} цаг өмнө`;
-    } else {
-      return date.toLocaleDateString();
-    }
+    if (diffInHours < 1) return "Саяхан";
+    else if (diffInHours < 24) return `${Math.floor(diffInHours)} цаг өмнө`;
+    else return date.toLocaleDateString();
   };
 
   return (
@@ -107,12 +96,12 @@ const DashboardPage = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Тавтай морил, {user.fullName}!
+            Тавтай морил, {user.fullName}! 👋
           </h1>
           <p className="text-gray-600">
             {user.role === "CHILD"
-              ? "Сэтгэл судлаачтай холбогдож, дэмжлэг аваарай"
-              : "Хүүхдүүд болон гэр бүлүүдтэй холбогдоорой"}
+              ? "Өнөөдөр өөрийгөө сонсох, илүү сайхан мэдрэмж авах шинэ боломж байна. Сэтгэл судлаачтай холбогдож дэмжлэг аваарай 💙"
+              : "Та хүүхдүүд болон гэр бүлүүдийн сэтгэлийг сонсож, тэдэнд итгэл найдвар өгөхөд бэлэн байна 🙌"}
           </p>
         </div>
 
@@ -134,8 +123,8 @@ const DashboardPage = () => {
                 </h3>
                 <p className="text-gray-600 text-sm">
                   {user.role === "CHILD"
-                    ? "Мэргэжлийн дэмжлэг авах"
-                    : "Хүүхдүүдтэй харилцах"}
+                    ? "Өөрт тохирсон мэргэжилтнээ олж, итгэлтэй ярилц"
+                    : "Хүүхдүүдтэй холбогдож, тэдэнд урам зориг өгөөрэй"}
                 </p>
               </div>
             </div>
@@ -152,7 +141,7 @@ const DashboardPage = () => {
               <div className="ml-4">
                 <h3 className="text-lg font-semibold text-gray-900">Зурвас</h3>
                 <p className="text-gray-600 text-sm">
-                  Бүх харилцан ярианы жагсаалт
+                  Таны бүх харилцан ярианы жагсаалт
                 </p>
               </div>
             </div>
@@ -168,7 +157,9 @@ const DashboardPage = () => {
               </div>
               <div className="ml-4">
                 <h3 className="text-lg font-semibold text-gray-900">Профайл</h3>
-                <p className="text-gray-600 text-sm">Хувийн мэдээлэл засах</p>
+                <p className="text-gray-600 text-sm">
+                  Хувийн мэдээллээ шинэчилж, өөрийгөө илүү танилцуул
+                </p>
               </div>
             </div>
           </Link>
@@ -241,12 +232,12 @@ const DashboardPage = () => {
               <div className="text-center py-8">
                 <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Хараахан харилцан яриа байхгүй байна
+                  Хараахан харилцан яриа алга байна 😊
                 </h3>
                 <p className="text-gray-600 mb-4">
                   {user.role === "CHILD"
-                    ? "Сэтгэл судлаачтай холбогдож эхлээрэй"
-                    : "Хүүхдүүдтэй холбогдож эхлээрэй"}
+                    ? "Анхны алхмаа хийж, сэтгэл судлаачтай ярилцаж үзээрэй."
+                    : "Шинэ хүүхдүүдтэй холбогдож, тэдэнд тусалж эхлээрэй."}
                 </p>
                 <Link
                   href="/psychologists"
@@ -276,6 +267,9 @@ const DashboardPage = () => {
                 <p className="text-2xl font-bold text-gray-900">
                   {chatrooms.length}
                 </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Илүү их яриа бол илүү их ойлголт, дэмжлэг ✨
+                </p>
               </div>
             </div>
           </div>
@@ -291,6 +285,9 @@ const DashboardPage = () => {
                 </p>
                 <p className="text-2xl font-bold text-gray-900">
                   {chatrooms.filter((c: Chatroom) => c.isActive).length}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Тогтмол ярилцах нь итгэлийг бий болгодог 🤝
                 </p>
               </div>
             </div>
@@ -311,6 +308,9 @@ const DashboardPage = () => {
                       total + (c.unreadCount?.[user.role.toLowerCase()] || 0),
                     0
                   )}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Бичсэн бүхнийг уншиж, бусдын сэтгэлийг хүндэлээрэй 💌
                 </p>
               </div>
             </div>

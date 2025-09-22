@@ -13,7 +13,7 @@ export const createPsychologist = async (
       ...input,
       password: hashedPassword,
       role: "PSYCHOLOGIST",
-      isVerified: false,
+      isVerified: true, // Psychologists are automatically verified
     });
 
     await psychologist.save();

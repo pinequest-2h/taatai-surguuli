@@ -93,20 +93,18 @@ const ProfilePage = () => {
     }
   }, [user]);
 
-  // Authentication guard
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/signin');
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Handle logout with redirect
   const handleLogout = () => {
     logout();
     router.push('/');
   };
 
-  // Show loading spinner while checking authentication
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -115,7 +113,7 @@ const ProfilePage = () => {
     );
   }
 
-  // Don't render anything if not authenticated (will redirect)
+
   if (!isAuthenticated) {
     return null;
   }
@@ -125,7 +123,7 @@ const ProfilePage = () => {
     setError('');
     setIsSubmitting(true);
 
-    // Basic validation
+
     if (!formData.fullName.trim()) {
       setError('Full name is required');
       setIsSubmitting(false);
@@ -154,9 +152,8 @@ const ProfilePage = () => {
 
       if (updateData?.updateUser) {
         setIsEditing(false);
-        // Update the auth context with new user data
+
         updateAuthUser(updateData.updateUser);
-        // Show success message
         alert('✅ Profile updated successfully!');
       }
     } catch (err: unknown) {
@@ -209,7 +206,6 @@ const ProfilePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Navigation */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -234,7 +230,6 @@ const ProfilePage = () => {
       </nav>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             My Profile 👤
@@ -245,11 +240,9 @@ const ProfilePage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Card */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-8">
               <div className="text-center">
-                {/* Profile Image */}
                 <div className="relative inline-block mb-4">
                   <div className="w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
                     <span className="text-white text-4xl font-bold">
@@ -261,19 +254,16 @@ const ProfilePage = () => {
                   </button>
                 </div>
 
-                {/* User Info */}
                 <h2 className="text-xl font-bold text-gray-900 mb-1">
                   {user?.fullName || 'User Name'}
                 </h2>
                 <p className="text-gray-600 mb-2">@{user?.userName || 'username'}</p>
                 
-                {/* Role Badge */}
                 <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getRoleColor(user?.role || '')} mb-4`}>
                   {getRoleIcon(user?.role || '')}
                   <span className="ml-2 capitalize">{user?.role?.toLowerCase() || 'user'}</span>
                 </div>
 
-                {/* Verification Status */}
                 {user?.isVerified && (
                   <div className="flex items-center justify-center text-green-600 mb-4">
                     <Shield className="h-4 w-4 mr-2" />
@@ -281,7 +271,6 @@ const ProfilePage = () => {
                   </div>
                 )}
 
-                {/* Member Since */}
                 <div className="text-sm text-gray-600">
                   Member since {new Date(user?.createdAt || Date.now()).toLocaleDateString('en-US', { 
                     month: 'long', 
@@ -292,7 +281,6 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Profile Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
               <div className="flex items-center justify-between mb-6">
@@ -325,7 +313,6 @@ const ProfilePage = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Basic Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -455,7 +442,6 @@ const ProfilePage = () => {
                   )}
                 </div>
 
-                {/* Account Information (Read-only) */}
                 <div className="border-t border-gray-200 pt-6">
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Account Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -483,7 +469,6 @@ const ProfilePage = () => {
                   </div>
                 </div>
 
-                {/* Save Button */}
                 {isEditing && (
                   <div className="flex justify-end pt-6 border-t border-gray-200">
                     <button
@@ -503,7 +488,6 @@ const ProfilePage = () => {
               </form>
             </div>
 
-            {/* Additional Actions */}
             <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Account Actions</h3>
               <div className="space-y-3">

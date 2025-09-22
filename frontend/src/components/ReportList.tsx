@@ -2,22 +2,24 @@
 
 import { useState } from 'react';
 import { useQuery } from '@apollo/client/react';
-import { GET_REPORTS, GET_MY_REPORTS } from '@/lib/graphql/queries';
-import { Report, ReportFilters, GetReportsResponse, GetMyReportsResponse } from '@/types/graphql';
+import { GET_REPORTS, GET_MY_REPORTS, GET_PSYCHOLOGIST_REPORTS } from '@/lib/graphql/queries';
+import { Report, ReportFilters, GetReportsResponse, GetMyReportsResponse, GetPsychologistReportsResponse } from '@/types/graphql';
 import ReportCard from './ReportCard';
 
 interface ReportListProps {
   showUser?: boolean;
   canEdit?: boolean;
   onStatusUpdate?: (reportId: string, status: string) => void;
-  showAllReports?: boolean; 
+  showAllReports?: boolean;
+  psychologistView?: boolean;
 }
 
 export default function ReportList({ 
   showUser = false, 
   canEdit = false, 
   onStatusUpdate,
-  showAllReports = false
+  showAllReports = false,
+  psychologistView = false
 }: ReportListProps) {
   const [filters, setFilters] = useState<ReportFilters>({});
   const [limit] = useState(10);
@@ -29,7 +31,7 @@ export default function ReportList({
     {
       variables: { limit, offset },
       fetchPolicy: 'cache-and-network',
-      skip: showAllReports 
+      skip: showAllReports || psychologistView
     }
   );
 
@@ -38,30 +40,47 @@ export default function ReportList({
     {
       variables: { filters, limit, offset },
       fetchPolicy: 'cache-and-network',
-      skip: !showAllReports 
+      skip: !showAllReports || psychologistView
     }
   );
 
-  const data = showAllReports ? allReportsData : myReportsData;
-  const loading = showAllReports ? allReportsLoading : myReportsLoading;
-  const error = showAllReports ? allReportsError : myReportsError;
-  const refetch = showAllReports ? refetchAllReports : refetchMyReports;
+  const { data: psychologistReportsData, loading: psychologistReportsLoading, error: psychologistReportsError, refetch: refetchPsychologistReports } = useQuery<GetPsychologistReportsResponse>(
+    GET_PSYCHOLOGIST_REPORTS,
+    {
+      variables: { limit, offset },
+      fetchPolicy: 'cache-and-network',
+      skip: !psychologistView
+    }
+  );
 
-  const reports = showAllReports 
-    ? (data as GetReportsResponse)?.getReports?.edges?.map((edge) => edge.node) || []
-    : (data as GetMyReportsResponse)?.getMyReports?.edges?.map((edge) => edge.node) || [];
+  const data = psychologistView ? psychologistReportsData : (showAllReports ? allReportsData : myReportsData);
+  const loading = psychologistView ? psychologistReportsLoading : (showAllReports ? allReportsLoading : myReportsLoading);
+  const error = psychologistView ? psychologistReportsError : (showAllReports ? allReportsError : myReportsError);
+  const refetch = psychologistView ? refetchPsychologistReports : (showAllReports ? refetchAllReports : refetchMyReports);
+
+  const reports = psychologistView 
+    ? (data as GetPsychologistReportsResponse)?.getPsychologistReports?.edges?.map((edge) => edge.node) || []
+    : showAllReports 
+      ? (data as GetReportsResponse)?.getReports?.edges?.map((edge) => edge.node) || []
+      : (data as GetMyReportsResponse)?.getMyReports?.edges?.map((edge) => edge.node) || [];
   
-  const totalCount = showAllReports
-    ? (data as GetReportsResponse)?.getReports?.totalCount || 0
-    : (data as GetMyReportsResponse)?.getMyReports?.totalCount || 0;
+  const totalCount = psychologistView
+    ? (data as GetPsychologistReportsResponse)?.getPsychologistReports?.totalCount || 0
+    : showAllReports
+      ? (data as GetReportsResponse)?.getReports?.totalCount || 0
+      : (data as GetMyReportsResponse)?.getMyReports?.totalCount || 0;
     
-  const hasNextPage = showAllReports
-    ? (data as GetReportsResponse)?.getReports?.pageInfo?.hasNextPage
-    : (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasNextPage;
+  const hasNextPage = psychologistView
+    ? (data as GetPsychologistReportsResponse)?.getPsychologistReports?.pageInfo?.hasNextPage
+    : showAllReports
+      ? (data as GetReportsResponse)?.getReports?.pageInfo?.hasNextPage
+      : (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasNextPage;
     
-  const hasPreviousPage = showAllReports
-    ? (data as GetReportsResponse)?.getReports?.pageInfo?.hasPreviousPage
-    : (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasPreviousPage;
+  const hasPreviousPage = psychologistView
+    ? (data as GetPsychologistReportsResponse)?.getPsychologistReports?.pageInfo?.hasPreviousPage
+    : showAllReports
+      ? (data as GetReportsResponse)?.getReports?.pageInfo?.hasPreviousPage
+      : (data as GetMyReportsResponse)?.getMyReports?.pageInfo?.hasPreviousPage;
 
   const handleStatusFilter = (status: string) => {
     setFilters(prev => ({
