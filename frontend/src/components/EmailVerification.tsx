@@ -27,6 +27,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
   const router = useRouter();
   const [otp, setOtp] = useState('');
   const [timeLeft, setTimeLeft] = useState(0);
+  const [isVerifying, setIsVerifying] = useState(false);
   
   const {
     isLoading,
@@ -57,9 +58,14 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
 
   const handleVerifyEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp.length !== 6) return;
+    if (otp.length !== 6 || isVerifying || isLoading) return;
     
-    await verifyEmail(email, otp);
+    setIsVerifying(true);
+    try {
+      await verifyEmail(email, otp);
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleResendCode = async () => {
@@ -71,10 +77,20 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
     setOtp(newOtp);
   };
 
-  const handleOTPComplete = (newOtp: string) => {
+  const handleOTPComplete = async (newOtp: string) => {
     setOtp(newOtp);
-    // Auto-submit when OTP is complete
-    verifyEmail(email, newOtp);
+    
+    // Prevent multiple verification calls
+    if (isVerifying || isLoading || newOtp.length !== 6) {
+      return;
+    }
+    
+    setIsVerifying(true);
+    try {
+      await verifyEmail(email, newOtp);
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleSkip = () => {
@@ -134,7 +150,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
                 value={otp}
                 onChange={handleOTPChange}
                 onComplete={handleOTPComplete}
-                disabled={isLoading}
+                disabled={isLoading || isVerifying}
                 className="justify-center"
               />
             </div>
@@ -146,10 +162,10 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
           <div>
             <button
               type="submit"
-              disabled={isLoading || otp.length !== 6}
+              disabled={isLoading || isVerifying || otp.length !== 6}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
+              {isLoading || isVerifying ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 <>

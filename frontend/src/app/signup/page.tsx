@@ -164,7 +164,7 @@ const SignUpPage = () => {
                   />
                   <div className="flex items-center">
                     <User className="h-5 w-5 mr-2 text-blue-600" />
-                    <span className="font-medium">Хүүхэд/Гэр бүл</span>
+                    <span className="font-medium text-gray-900">Хүүхэд/Гэр бүл</span>
                   </div>
                 </label>
                 <label className={`relative flex items-center p-4 border-2 rounded-lg cursor-pointer transition-colors ${
@@ -182,7 +182,7 @@ const SignUpPage = () => {
                   />
                   <div className="flex items-center">
                     <Brain className="h-5 w-5 mr-2 text-purple-600" />
-                    <span className="font-medium">Сэтгэл судлаач</span>
+                    <span className="font-medium text-gray-900">Сэтгэл судлаач</span>
                   </div>
                 </label>
               </div>
@@ -201,7 +201,7 @@ const SignUpPage = () => {
                   value={formData.fullName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
                   placeholder="Бүтэн нэрээ оруулна уу"
                 />
               </div>
@@ -217,7 +217,7 @@ const SignUpPage = () => {
                   value={formData.userName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
                   placeholder="Хэрэглэгчийн нэр сонгоно уу"
                 />
               </div>
@@ -234,7 +234,7 @@ const SignUpPage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
                   placeholder="И-мэйлээ оруулна уу"
                 />
               </div>
@@ -249,7 +249,7 @@ const SignUpPage = () => {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
                   placeholder="Утасны дугаараа оруулна уу"
                 />
               </div>
@@ -265,7 +265,7 @@ const SignUpPage = () => {
                 value={formData.gender}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
               >
                 <option value="OTHER">Хэлэхгүй байх</option>
                 <option value="FEMALE">Эмэгтэй</option>
@@ -283,7 +283,7 @@ const SignUpPage = () => {
                 value={formData.bio}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
                 placeholder="Өөрийнхөө тухай бага зүйл хэлээрэй..."
               />
             </div>
@@ -302,7 +302,7 @@ const SignUpPage = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
                     placeholder="Нууц үг үүсгэнэ үү"
                   />
                   <button
@@ -327,7 +327,7 @@ const SignUpPage = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900"
                     placeholder="Нууц үгээ баталгаажуулна уу"
                   />
                   <button
