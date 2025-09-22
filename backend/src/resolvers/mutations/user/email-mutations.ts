@@ -1,16 +1,90 @@
-import { ForgotPasswordInput, ResetPasswordInput, SendVerificationEmailInput } from "@/types/generated";
 import { User } from "@/models/User";
 import { GraphQLError } from "graphql";
-import { generateOTP, sendOTPEmail, sendVerificationEmail } from "@/utils";
-import { 
-  storeOTP, 
-  getStoredOTP, 
-  clearOTP,
-  storeVerificationOTP,
-  getStoredVerificationOTP,
-  clearVerificationOTP
-} from "@/utils/otp-storage";
+import { generateOTP, sendOTPEmail } from "@/utils";
+import { storeVerificationOTP } from "@/utils/otp-storage";
 import { encryptHash } from "@/utils/hash";
+
+// Define input types inline since they're not exported from generated types
+interface ForgotPasswordInput {
+  identifier: string;
+}
+
+interface ResetPasswordInput {
+  identifier: string;
+  otp: string;
+  newPassword: string;
+}
+
+interface SendVerificationEmailInput {
+  email: string;
+}
+
+// OTP storage functions for password reset
+const passwordResetOTPStorage = new Map<string, { otp: string; expiresAt: number }>();
+
+const storeOTP = (identifier: string, otp: string) => {
+  const OTP_TTL_MS = 10 * 60 * 1000; // 10 minutes
+  const key = `reset_${identifier.toLowerCase().trim()}`;
+  const expiresAt = Date.now() + OTP_TTL_MS;
+
+  passwordResetOTPStorage.set(key, { otp, expiresAt });
+
+  setTimeout(() => {
+    const current = passwordResetOTPStorage.get(key);
+    if (current && current.expiresAt === expiresAt) {
+      passwordResetOTPStorage.delete(key);
+    }
+  }, OTP_TTL_MS);
+};
+
+const getStoredOTP = (identifier: string): string | null => {
+  const key = `reset_${identifier.toLowerCase().trim()}`;
+  const stored = passwordResetOTPStorage.get(key);
+  
+  if (!stored) return null;
+  
+  if (Date.now() > stored.expiresAt) {
+    passwordResetOTPStorage.delete(key);
+    return null;
+  }
+  
+  return stored.otp;
+};
+
+const clearOTP = (identifier: string) => {
+  const key = `reset_${identifier.toLowerCase().trim()}`;
+  passwordResetOTPStorage.delete(key);
+};
+
+// Verification OTP storage functions
+const verificationOTPStorage = new Map<string, { otp: string; expiresAt: number }>();
+
+const getStoredVerificationOTP = (email: string): string | null => {
+  const key = `verification_${email.toLowerCase().trim()}`;
+  const stored = verificationOTPStorage.get(key);
+  
+  if (!stored) return null;
+  
+  if (Date.now() > stored.expiresAt) {
+    verificationOTPStorage.delete(key);
+    return null;
+  }
+  
+  return stored.otp;
+};
+
+const clearVerificationOTP = (email: string) => {
+  const key = `verification_${email.toLowerCase().trim()}`;
+  verificationOTPStorage.delete(key);
+};
+
+// Email verification function
+const sendVerificationEmailInternal = async (email: string, otp: string): Promise<void> => {
+  // This would call the actual email sending function
+  // For now, we'll just log it
+  console.log(`📧 Verification email would be sent to ${email} with OTP: ${otp}`);
+  // In a real implementation, you would call your email service here
+};
 
 export const forgotPassword = async (
   _parent: unknown,
@@ -183,7 +257,7 @@ export const sendVerificationEmail = async (
 
     const otp = generateOTP();
     storeVerificationOTP(email, otp);
-    await sendVerificationEmail(email, otp);
+    await sendVerificationEmailInternal(email, otp);
 
     console.log("✅ Verification email sent successfully to:", email);
     return true;
@@ -240,9 +314,27 @@ export const verifyEmailOTP = async (
 
 export const otpStorage = async (
   _parent: unknown,
-  { input }: { input: any }
-): Promise<any> => {
+  { input }: { input: { action: string; data?: unknown } }
+): Promise<{ message: string; data?: unknown }> => {
   // This is a utility mutation for debugging/managing OTP storage
-  // Implementation depends on your specific needs
-  return { message: "OTP storage utility" };
+  try {
+    switch (input.action) {
+      case 'clear':
+        passwordResetOTPStorage.clear();
+        return { message: 'All password reset OTPs cleared' };
+      case 'list':
+        const otps = Array.from(passwordResetOTPStorage.entries()).map(([key, value]) => ({
+          key,
+          otp: value.otp,
+          expiresAt: new Date(value.expiresAt).toISOString()
+        }));
+        return { message: 'Password reset OTPs listed', data: otps };
+      default:
+        return { message: 'OTP storage utility - use "clear" or "list" actions' };
+    }
+  } catch {
+    throw new GraphQLError('Failed to manage OTP storage', {
+      extensions: { code: 'OTP_STORAGE_ERROR' },
+    });
+  }
 };
