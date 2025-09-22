@@ -98,7 +98,6 @@ export default function ReportsPage() {
                 алхам юм.
               </p>
               <ReportForm
-                userId={user._id}
                 onSuccess={() => setActiveTab("my-reports")}
               />
             </div>

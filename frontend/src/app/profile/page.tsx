@@ -71,7 +71,7 @@ const ProfilePage = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { data, loading, refetch } = useQuery<GetUserByIdResponse>(GET_USER_BY_ID, {
+  const { data, loading } = useQuery<GetUserByIdResponse>(GET_USER_BY_ID, {
     variables: { _id: currentUser?._id },
     skip: !currentUser?._id,
   });
