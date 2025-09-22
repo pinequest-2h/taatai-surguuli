@@ -1,8 +1,9 @@
 import { User } from "@/models/User";
 import { GraphQLError } from "graphql";
 import { generateOTP, sendOTPEmail } from "@/utils";
-import { storeVerificationOTP } from "@/utils/otp-storage";
+import { storeVerificationOTP, otpStorage as verificationOTPStorage } from "@/utils/otp-storage";
 import { encryptHash } from "@/utils/hash";
+import { sendVerificationEmail as sendVerificationEmailHandler } from "@/utils/mail-handler";
 
 // Define input types inline since they're not exported from generated types
 interface ForgotPasswordInput {
@@ -23,7 +24,7 @@ interface SendVerificationEmailInput {
 const passwordResetOTPStorage = new Map<string, { otp: string; expiresAt: number }>();
 
 const storeOTP = (identifier: string, otp: string) => {
-  const OTP_TTL_MS = 10 * 60 * 1000; // 10 minutes
+  const OTP_TTL_MS = 10 * 60 * 1000; 
   const key = `reset_${identifier.toLowerCase().trim()}`;
   const expiresAt = Date.now() + OTP_TTL_MS;
 
@@ -57,8 +58,6 @@ const clearOTP = (identifier: string) => {
 };
 
 // Verification OTP storage functions
-const verificationOTPStorage = new Map<string, { otp: string; expiresAt: number }>();
-
 const getStoredVerificationOTP = (email: string): string | null => {
   const key = `verification_${email.toLowerCase().trim()}`;
   const stored = verificationOTPStorage.get(key);
@@ -78,13 +77,6 @@ const clearVerificationOTP = (email: string) => {
   verificationOTPStorage.delete(key);
 };
 
-// Email verification function
-const sendVerificationEmailInternal = async (email: string, otp: string): Promise<void> => {
-  // This would call the actual email sending function
-  // For now, we'll just log it
-  console.log(`📧 Verification email would be sent to ${email} with OTP: ${otp}`);
-  // In a real implementation, you would call your email service here
-};
 
 export const forgotPassword = async (
   _parent: unknown,
@@ -257,7 +249,7 @@ export const sendVerificationEmail = async (
 
     const otp = generateOTP();
     storeVerificationOTP(email, otp);
-    await sendVerificationEmailInternal(email, otp);
+    await sendVerificationEmailHandler(email, otp);
 
     console.log("✅ Verification email sent successfully to:", email);
     return true;
