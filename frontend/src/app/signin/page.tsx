@@ -150,13 +150,21 @@ const SignInPage = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Бүртгэл байхгүй юу?{' '}
-              <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                Энд бүртгүүлнэ үү
+          <div className="mt-6 space-y-3">
+            <div className="text-center">
+              <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                Нууц үгээ мартсан уу?
               </Link>
-            </p>
+            </div>
+            
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Бүртгэл байхгүй юу?{' '}
+                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+                  Энд бүртгүүлнэ үү
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
 

@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client/react';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { CreateUserResponse } from '@/types/graphql';
 import { Brain, Eye, EyeOff, Heart, User } from 'lucide-react';
+import EmailVerification from '@/components/EmailVerification';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +25,8 @@ const SignUpPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [createdUserEmail, setCreatedUserEmail] = useState('');
 
   const router = useRouter();
 
@@ -71,8 +74,14 @@ const SignUpPage = () => {
       });
 
       if (data?.createUser) {
-
-        router.push('/signin?message=Registration successful! Please sign in.');
+        // If user provided email, show email verification
+        if (formData.email) {
+          setCreatedUserEmail(formData.email);
+          setShowEmailVerification(true);
+        } else {
+          // No email provided, go directly to sign in
+          router.push('/signin?message=Registration successful! Please sign in.');
+        }
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
@@ -91,6 +100,21 @@ const SignUpPage = () => {
     console.log('New formData after update:', newFormData);
     setFormData(newFormData);
   };
+
+  // Show email verification if user was created with email
+  if (showEmailVerification) {
+    return (
+      <EmailVerification
+        email={createdUserEmail}
+        onVerified={() => {
+          router.push('/signin?message=Email verified! Please sign in.');
+        }}
+        onCancel={() => {
+          router.push('/signin?message=Registration successful! Please sign in.');
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
