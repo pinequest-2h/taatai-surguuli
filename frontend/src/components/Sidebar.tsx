@@ -82,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   >
                     <FileText className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
-                    Тайлан илгээх
+                    Гомдол илгээх
                   </Link>
                 )}
 
@@ -92,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   >
                     <FileText className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
-                    Миний тайлан
+                    Миний гомдол
                   </Link>
                 )}
 
@@ -102,7 +102,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   >
                     <Shield className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
-                    Тайлан удирдах
+                    Гомдол удирдах
                   </Link>
                 )}
 

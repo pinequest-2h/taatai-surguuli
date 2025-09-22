@@ -51,7 +51,7 @@ export default function ReportsPage() {
 
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-3">
-            Таны Тайлангууд 📝
+            Таны Гомдолгууд 📝
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Та өөрийн санаа зовсон асуудлаа энд хуваалцаж болно. Бид таны
@@ -71,7 +71,7 @@ export default function ReportsPage() {
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              ✍️ Шинэ Тайлан Илгээх
+                ✍️ Шинэ Гомдол Илгээх
             </button>
             <button
               onClick={() => setActiveTab("my-reports")}
@@ -81,7 +81,7 @@ export default function ReportsPage() {
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              📂 Миний Тайлангууд
+              📂 Миний Гомдолгууд
             </button>
           </nav>
         </div>
@@ -90,7 +90,7 @@ export default function ReportsPage() {
           <div className="space-y-6">
             <div className="bg-white shadow-md rounded-lg p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                Шинэ Тайлан
+                Шинэ Гомдол
               </h2>
               <p className="text-gray-600 mb-6 text-sm">
                 Та юу мэдэрч байгаагаа, ямар асуудалтай тулгарч байгаагаа
@@ -108,7 +108,7 @@ export default function ReportsPage() {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Миний Илгээсэн Тайлангууд
+                Миний Илгээсэн Гомдолгууд
               </h2>
              
               <ReportList canEdit={false} onStatusUpdate={handleStatusUpdate} />

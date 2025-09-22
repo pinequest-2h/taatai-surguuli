@@ -3,13 +3,19 @@ import { GraphQLError } from "graphql";
 
 export const getPsychologistProfile = async (
   _parent: unknown,
-  { _id }: { _id: string }
+  { _id }: { _id: string },
+  context: { userId?: string }
 ) => {
   try {
-    const profile = await PsychologistProfile.findOne({ user: _id })
-      .populate('user', '_id fullName userName email profileImage role isPrivate');
+    const profile = await PsychologistProfile.findById(_id)
+      .populate({
+        path: 'user',
+        select: '_id fullName userName email profileImage role isPrivate',
 
-    if (!profile) {
+        match: context.userId ? {} : { isPrivate: { $ne: true } }
+      });
+
+    if (!profile || !profile.user) {
       return null;
     }
 
@@ -28,7 +34,8 @@ export const getPsychologistProfiles = async (
     filters?: Record<string, unknown>; 
     limit?: number; 
     offset?: number 
-  }
+  },
+  context: { userId?: string }
 ) => {
   try {
     const query: Record<string, unknown> = {};
@@ -68,23 +75,31 @@ export const getPsychologistProfiles = async (
     }
 
     const profiles = await PsychologistProfile.find(query)
-      .populate('user', '_id fullName userName profileImage role isPrivate')
+      .populate({
+        path: 'user',
+        select: '_id fullName userName profileImage role isPrivate',
+        // Filter out private profiles for non-authenticated users
+        match: context.userId ? {} : { isPrivate: { $ne: true } }
+      })
       .sort({ averageRating: -1, totalSessions: -1 })
       .skip(offset)
       .limit(limit);
 
+    // Filter out profiles where user population failed (due to isPrivate filter)
+    const filteredProfiles = profiles.filter(profile => profile.user);
+
     const totalCount = await PsychologistProfile.countDocuments(query);
 
     return {
-      edges: profiles.map(profile => ({
+      edges: filteredProfiles.map(profile => ({
         node: profile.toObject(),
         cursor: profile._id.toString(),
       })),
       pageInfo: {
         hasNextPage: offset + limit < totalCount,
         hasPreviousPage: offset > 0,
-        startCursor: profiles[0]?._id.toString(),
-        endCursor: profiles[profiles.length - 1]?._id.toString(),
+        startCursor: filteredProfiles[0]?._id.toString(),
+        endCursor: filteredProfiles[filteredProfiles.length - 1]?._id.toString(),
       },
       totalCount,
     };
@@ -96,14 +111,26 @@ export const getPsychologistProfiles = async (
   }
 };
 
-export const getAvailablePsychologists = async () => {
+export const getAvailablePsychologists = async (
+  _parent: unknown,
+  _args: unknown,
+  context: { userId?: string }
+) => {
   try {
     const profiles = await PsychologistProfile.find({
       isAcceptingNewClients: true,
     })
-      .populate('user', '_id fullName userName profileImage role isPrivate');
+      .populate({
+        path: 'user',
+        select: '_id fullName userName profileImage role isPrivate',
+        // Filter out private profiles for non-authenticated users
+        match: context.userId ? {} : { isPrivate: { $ne: true } }
+      });
 
-    return profiles.map(profile => profile.toObject());
+    // Filter out profiles where user population failed (due to isPrivate filter)
+    const filteredProfiles = profiles.filter(profile => profile.user);
+
+    return filteredProfiles.map(profile => profile.toObject());
   } catch (error: unknown) {
     console.error("❌ GetAvailablePsychologists Error:", error);
     throw new GraphQLError("Failed to fetch available psychologists", {
