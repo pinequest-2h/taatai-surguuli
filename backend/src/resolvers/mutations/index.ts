@@ -1,6 +1,14 @@
 import { createUser } from "./user/create-user-mutation";
 import { loginUser } from "./user/login-user-mutation";
 import { updateUser } from "./user/update-user-mutation";
+import { 
+  forgotPassword, 
+  resetPassword, 
+  verifyOTP, 
+  sendVerificationEmail, 
+  verifyEmailOTP,
+  otpStorage
+} from "./user/email-mutations";
 import { PsychologistMutations } from "./psychologist";
 import { createChatroom, sendChatroomMessage, markChatroomMessagesAsRead } from "./chatroom/send-chatroom-message";
 import { createReport } from "./report/create-report";
@@ -12,6 +20,12 @@ export const Mutation = {
   createUser,
   loginUser,
   updateUser,
+  forgotPassword,
+  resetPassword,
+  verifyOTP,
+  sendVerificationEmail,
+  verifyEmailOTP,
+  otpStorage,
   createChatroom,
   sendChatroomMessage,
   markChatroomMessagesAsRead,

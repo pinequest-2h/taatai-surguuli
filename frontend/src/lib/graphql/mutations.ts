@@ -255,3 +255,40 @@ export const DELETE_REPORT = gql`
     deleteReport(_id: $_id)
   }
 `;
+
+// Email-related Mutations
+export const FORGOT_PASSWORD = gql`
+  mutation ForgotPassword($input: ForgotPasswordInput!) {
+    forgotPassword(input: $input)
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation ResetPassword($input: ResetPasswordInput!) {
+    resetPassword(input: $input)
+  }
+`;
+
+export const VERIFY_OTP = gql`
+  mutation VerifyOTP($identifier: String!, $otp: String!) {
+    verifyOTP(identifier: $identifier, otp: $otp)
+  }
+`;
+
+export const SEND_VERIFICATION_EMAIL = gql`
+  mutation SendVerificationEmail($input: SendVerificationEmailInput!) {
+    sendVerificationEmail(input: $input)
+  }
+`;
+
+export const VERIFY_EMAIL_OTP = gql`
+  mutation VerifyEmailOTP($email: String!, $otp: String!) {
+    verifyEmailOTP(email: $email, otp: $otp)
+  }
+`;
+
+export const OTP_STORAGE = gql`
+  mutation OtpStorage($input: OtpStorageInput!) {
+    otpStorage(input: $input)
+  }
+`;
