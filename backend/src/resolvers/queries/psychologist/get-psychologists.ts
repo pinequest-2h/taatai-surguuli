@@ -1,8 +1,19 @@
 import { User } from "@/models/User";
     
-export const getPsychologists = async () => {
+export const getPsychologists = async (
+  _parent: unknown,
+  _args: unknown,
+  context: { userId?: string }
+) => {
   try {
-    const psychologists = await User.find({ role: "PSYCHOLOGIST" })
+    const query: Record<string, unknown> = { role: "PSYCHOLOGIST" };
+    
+    // Filter out private profiles for non-authenticated users
+    if (!context.userId) {
+      query.isPrivate = { $ne: true };
+    }
+    
+    const psychologists = await User.find(query)
       .select("-password")  
       .sort({ createdAt: -1 }); 
     
@@ -13,12 +24,23 @@ export const getPsychologists = async () => {
   }
 };
 
-export const getPsychologistById = async (_parent: unknown, { _id }: { _id: string }) => {
+export const getPsychologistById = async (
+  _parent: unknown, 
+  { _id }: { _id: string },
+  context: { userId?: string }
+) => {
   try {
-    const psychologist = await User.findOne({ 
+    const query: Record<string, unknown> = { 
       _id, 
       role: "PSYCHOLOGIST" 
-    }).select("-password");
+    };
+    
+
+    if (!context.userId) {
+      query.isPrivate = { $ne: true };
+    }
+    
+    const psychologist = await User.findOne(query).select("-password");
     
     if (!psychologist) {
       throw new Error("Psychologist not found");
@@ -31,18 +53,29 @@ export const getPsychologistById = async (_parent: unknown, { _id }: { _id: stri
   }
 };
 
-export const searchPsychologists = async (_parent: unknown, { keyword }: { keyword: string }) => {
+export const searchPsychologists = async (
+  _parent: unknown, 
+  { keyword }: { keyword: string },
+  context: { userId?: string }
+) => {
   try {
-    const psychologists = await User.find({
+    const query: Record<string, unknown> = {
       role: "PSYCHOLOGIST",
       $or: [
         { fullName: { $regex: keyword, $options: "i" } },
         { userName: { $regex: keyword, $options: "i" } },
         { bio: { $regex: keyword, $options: "i" } }
       ]
-    })
-    .select("-password")
-    .sort({ fullName: 1 });
+    };
+    
+    // Filter out private profiles for non-authenticated users
+    if (!context.userId) {
+      query.isPrivate = { $ne: true };
+    }
+    
+    const psychologists = await User.find(query)
+      .select("-password")
+      .sort({ fullName: 1 });
     
     return psychologists;
   } catch (error) {
