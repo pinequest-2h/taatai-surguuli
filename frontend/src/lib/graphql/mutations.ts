@@ -121,7 +121,6 @@ export const CREATE_PSYCHOLOGIST_PROFILE = gql`
       experience
       education
       certifications
-      languages
       hourlyRate
       bio
       isAcceptingNewClients
@@ -138,7 +137,6 @@ export const UPDATE_PSYCHOLOGIST_PROFILE = gql`
       experience
       education
       certifications
-      languages
       hourlyRate
       bio
       isAcceptingNewClients

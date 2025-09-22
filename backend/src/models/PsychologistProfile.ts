@@ -6,7 +6,6 @@ export interface IPsychologistProfile extends Document {
   experience: number;
   education: string[];
   certifications: string[];
-  languages: string[];
   hourlyRate: number;
   availability: 'AVAILABLE' | 'BUSY' | 'OFFLINE' | 'ON_BREAK';
   workingHours: {

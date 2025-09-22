@@ -289,7 +289,7 @@ const ProfilePage = () => {
                   <div className="flex items-center justify-center text-green-600 mb-6 bg-green-50 px-4 py-2 rounded-full">
                     <CheckCircle className="h-4 w-4 mr-2" />
                     <span className="text-sm font-medium">
-                      Баталгаажсан данс
+                      Баталгаажсан хэрэглэгч
                     </span>
                   </div>
                 )}
@@ -358,7 +358,7 @@ const ProfilePage = () => {
                           value={formData[field as keyof typeof formData]}
                           onChange={handleChange}
                           required
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-900"
                           placeholder={field === "fullName" ? "Бүтэн нэрээ оруулна уу" : "Хэрэглэгчийн нэр оруулна уу"}
                         />
                       ) : (
@@ -387,7 +387,7 @@ const ProfilePage = () => {
                           name={field}
                           value={formData[field as keyof typeof formData] || ""}
                           onChange={handleChange}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-900"
                           placeholder={field === "email" ? "и-мэйл@example.com" : "+976 1234 5678"}
                         />
                       ) : (
@@ -417,7 +417,7 @@ const ProfilePage = () => {
                       name="gender"
                       value={formData.gender}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-gray-900"
                     >
                       <option value="OTHER">Хэлэхгүй байх</option>
                       <option value="FEMALE">Эмэгтэй</option>
@@ -445,7 +445,7 @@ const ProfilePage = () => {
                       value={formData.bio}
                       onChange={handleChange}
                       rows={4}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none text-gray-900"
                       placeholder="Өөрийнхөө тухай бага зүйл хэлээрэй..."
                     />
                   ) : (
@@ -481,7 +481,7 @@ const ProfilePage = () => {
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 p-8 space-y-4">
               <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
                 <Settings className="h-5 w-5 mr-3 text-blue-600" />
-                Дансны үйлдлүүд
+                Хэрэглэгчийн үйлдлүүд
               </h3>
               {user?.role === "PSYCHOLOGIST" && (
                 <Link
@@ -504,9 +504,7 @@ const ProfilePage = () => {
                 <LogOut className="h-6 w-6 mr-4 text-red-600 group-hover:text-red-700" />
                 <div>
                   <div className="font-semibold text-lg">Системээс гарах</div>
-                  <div className="text-sm text-gray-500">
-                    Дансаа аюулгүй болгож гарах
-                  </div>
+                  
                 </div>
               </button>
             </div>

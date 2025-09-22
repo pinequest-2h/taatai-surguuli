@@ -1,62 +1,48 @@
-import { User } from "@/models/User";
+import { PsychologistProfile } from "@/models/PsychologistProfile";
 import { GraphQLError } from "graphql";
 
 interface UpdatePsychologistProfileInput {
-  _id: string;
-  fullName?: string;
-  userName?: string;
+  specializations?: string[];
+  experience?: number;
+  education?: string[];
+  certifications?: string[];
+  hourlyRate?: number;
   bio?: string;
   profileImage?: string;
-  phoneNumber?: string;
-  email?: string;
+  coverImage?: string;
+  isAcceptingNewClients?: boolean;
+  workingHours?: any;
 }
-
 
 export const updatePsychologistProfile = async (
   _parent: unknown,
-  { input }: { input: UpdatePsychologistProfileInput }
+  { _id, input }: { _id: string; input: UpdatePsychologistProfileInput }
 ) => {
   try {
-    const { _id, ...updateData } = input;
-    
-    // Verify the user is a psychologist
-    const existingUser = await User.findOne({ _id, role: "PSYCHOLOGIST" });
-    if (!existingUser) {
-      throw new GraphQLError("Psychologist not found", {
-        extensions: { code: "PSYCHOLOGIST_NOT_FOUND" },
+    // Find the psychologist profile by user ID
+    const existingProfile = await PsychologistProfile.findOne({ user: _id });
+    if (!existingProfile) {
+      throw new GraphQLError("Psychologist profile not found", {
+        extensions: { code: "PROFILE_NOT_FOUND" },
       });
     }
-    
 
-    const updatedPsychologist = await User.findByIdAndUpdate(
-      _id,
-      { ...updateData, updatedAt: new Date() },
+    // Update the profile
+    const updatedProfile = await PsychologistProfile.findByIdAndUpdate(
+      existingProfile._id,
+      { ...input, updatedAt: new Date() },
       { new: true, runValidators: true }
-    ).select("-password");
+    ).populate('user', '_id fullName userName email profileImage role isPrivate');
     
-    if (!updatedPsychologist) {
+    if (!updatedProfile) {
       throw new GraphQLError("Failed to update psychologist profile", {
         extensions: { code: "UPDATE_FAILED" },
       });
     }
     
-    return updatedPsychologist;
+    return updatedProfile.toObject();
   } catch (error: unknown) {
     console.error("❌ UpdatePsychologistProfile Error:", error);
-    
-
-    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
-      if ('keyPattern' in error && error.keyPattern && typeof error.keyPattern === 'object' && 'email' in error.keyPattern) {
-        throw new GraphQLError("Email already exists", {
-          extensions: { code: "EMAIL_ALREADY_EXISTS" },
-        });
-      }
-      if ('keyPattern' in error && error.keyPattern && typeof error.keyPattern === 'object' && 'userName' in error.keyPattern) {
-        throw new GraphQLError("Username already exists", {
-          extensions: { code: "USERNAME_ALREADY_EXISTS" },
-        });
-      }
-    }
     
     throw new GraphQLError("Failed to update psychologist profile", {
       extensions: { code: "UPDATE_PSYCHOLOGIST_FAILED" },

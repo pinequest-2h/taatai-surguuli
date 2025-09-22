@@ -88,7 +88,7 @@ const PsychologistsPage = () => {
             <div className="flex items-center">
               <Link href="/dashboard" className="flex items-center">
                 <Brain className="h-8 w-8 text-blue-600" />
-                <span className="ml-2 text-xl font-bold text-gray-900">Сэтгэл Сэтгэлгээ</span>
+                <span className="ml-2 text-xl font-bold text-gray-900">Сонсъё, Дэмжье.</span>
               </Link>
             </div>
             
@@ -135,7 +135,7 @@ const PsychologistsPage = () => {
                     type="text"
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     placeholder="Сэтгэл судлаач хайх..."
                   />
                 </div>
@@ -173,7 +173,7 @@ const PsychologistsPage = () => {
                   max="50"
                   value={filters.minExperience}
                   onChange={(e) => setFilters(prev => ({ ...prev, minExperience: parseInt(e.target.value) || 0 }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                 />
               </div>
 
@@ -292,7 +292,7 @@ const PsychologistsPage = () => {
                           </div>
                         </div>
 
-                        {/* Languages removed */}
+                        {/* Languages section removed */}
 
                         {/* Action Buttons */}
                         <div className="mt-6 flex items-center space-x-3">
