@@ -7,11 +7,10 @@ import { GET_MY_REPORTS } from "@/lib/graphql/queries";
 import { CreateReportInput } from "@/types/graphql";
 
 interface ReportFormProps {
-  userId: string;
   onSuccess?: () => void;
 }
 
-export default function ReportForm({ userId, onSuccess }: ReportFormProps) {
+export default function ReportForm({ onSuccess }: ReportFormProps) {
   const [school, setSchool] = useState("");
   const [classGrade, setClassGrade] = useState("");
   const [description, setDescription] = useState("");
