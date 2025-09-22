@@ -14,6 +14,14 @@ export const createPsychologistProfile = async (
       });
     }
 
+    // Check if profile already exists
+    const existingProfile = await PsychologistProfile.findOne({ user: context.userId });
+    if (existingProfile) {
+      throw new GraphQLError("Psychologist profile already exists for this user", {
+        extensions: { code: "PROFILE_ALREADY_EXISTS" },
+      });
+    }
+
     const profile = new PsychologistProfile({
       ...input,
       user: context.userId,
@@ -30,6 +38,14 @@ export const createPsychologistProfile = async (
     return populatedProfile?.toObject();
   } catch (error: unknown) {
     console.error("❌ CreatePsychologistProfile Error:", error);
+    
+    // Handle specific MongoDB duplicate key error
+    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
+      throw new GraphQLError("Psychologist profile already exists for this user", {
+        extensions: { code: "PROFILE_ALREADY_EXISTS" },
+      });
+    }
+    
     throw new GraphQLError("Failed to create psychologist profile", {
       extensions: { code: "CREATE_PROFILE_FAILED" },
     });

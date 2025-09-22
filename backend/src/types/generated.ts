@@ -111,7 +111,6 @@ export interface CreatePsychologistProfileInput {
   experience: number;
   education: string[];
   certifications: string[];
-  languages: string[];
   hourlyRate: number;
   bio: string;
   profileImage?: string;

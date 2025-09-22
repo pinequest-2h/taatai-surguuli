@@ -27,13 +27,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 lg:static lg:inset-0`}>
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 lg:static lg:inset-0`}
+      >
         <div className="flex items-center justify-between h-16 px-4 border-b">
           <div className="flex items-center">
             <Brain className="h-8 w-8 text-blue-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">Сэтгэл Сэтгэлгээ</span>
+            <span className="ml-2 text-xl font-bold text-gray-900">
+              Сонсъё, Дэмжье.
+            </span>
           </div>
           <button
             onClick={onClose}
@@ -42,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <X className="h-6 w-6" />
           </button>
         </div>
-        
+
         <nav className="mt-5 px-2">
           <div className="space-y-1">
             <Link
@@ -52,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <Home className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
               Нүүр хуудас
             </Link>
-            
+
             {isAuthenticated ? (
               <>
                 <Link
@@ -62,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <MessageCircle className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
                   Зурвас
                 </Link>
-                
+
                 <Link
                   href="/psychologists"
                   className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -70,9 +74,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <Users className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
                   Сэтгэл судлаачид
                 </Link>
-                
+
                 {/* Report Navigation - Role-based */}
-                {user?.role === 'CHILD' && (
+                {user?.role === "CHILD" && (
                   <Link
                     href="/reports"
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -81,8 +85,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     Тайлан илгээх
                   </Link>
                 )}
-                
-                {user?.role === 'PSYCHOLOGIST' && (
+
+                {user?.role === "PSYCHOLOGIST" && (
                   <Link
                     href="/psychologist/reports"
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -91,8 +95,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     Миний тайлан
                   </Link>
                 )}
-                
-                {user?.role === 'ADMIN' && (
+
+                {user?.role === "ADMIN" && (
                   <Link
                     href="/admin/reports"
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -101,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     Тайлан удирдах
                   </Link>
                 )}
-                
+
                 <Link
                   href="/profile"
                   className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -109,18 +113,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <User className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
                   Профайл
                 </Link>
-                
+
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <div className="px-2 py-2">
-                    <div className="flex items-center cursor-pointer" onClick={() => router.push('/profile')}>
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={() => router.push("/profile")}
+                    >
                       <User className="h-8 w-8 text-gray-400" />
                       <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-700">{user?.fullName}</p>
+                        <p className="text-sm font-medium text-gray-700">
+                          {user?.fullName}
+                        </p>
                         <p className="text-xs text-gray-500">{user?.email}</p>
                       </div>
                     </div>
                   </div>
-                  
+
                   <button
                     onClick={logout}
                     className="group flex items-center w-full px-3 py-3 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
@@ -139,7 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <Users className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
                   Сэтгэл судлаачид
                 </Link>
-                
+
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <Link
                     href="/signin"
@@ -148,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     <User className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
                     Нэвтрэх
                   </Link>
-                  
+
                   <Link
                     href="/signup"
                     className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-blue-600 hover:bg-blue-50"
@@ -163,9 +172,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </nav>
       </div>
 
-
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 lg:hidden"
           onClick={onClose}
         />

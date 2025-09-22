@@ -30,7 +30,6 @@ export const psychologistTypeDefs = gql`
     experience: Int! # years of experience
     education: [String!]!
     certifications: [String!]!
-    languages: [String!]!
     hourlyRate: Float!
     availability: AvailabilityStatus!
     workingHours: WorkingHours!
@@ -84,7 +83,6 @@ export const psychologistTypeDefs = gql`
     experience: Int!
     education: [String!]!
     certifications: [String!]!
-    languages: [String!]!
     hourlyRate: Float!
     bio: String!
     profileImage: String
@@ -98,7 +96,6 @@ export const psychologistTypeDefs = gql`
     experience: Int
     education: [String!]
     certifications: [String!]
-    languages: [String!]
     hourlyRate: Float
     bio: String
     profileImage: String
@@ -131,7 +128,6 @@ export const psychologistTypeDefs = gql`
 
   input PsychologistFilters {
     specializations: [Specialization!]
-    languages: [String!]
     minExperience: Int
     maxHourlyRate: Float
     isAcceptingNewClients: Boolean

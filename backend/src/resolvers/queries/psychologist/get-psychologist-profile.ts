@@ -6,7 +6,7 @@ export const getPsychologistProfile = async (
   { _id }: { _id: string }
 ) => {
   try {
-    const profile = await PsychologistProfile.findById(_id)
+    const profile = await PsychologistProfile.findOne({ user: _id })
       .populate('user', '_id fullName userName email profileImage role isPrivate');
 
     if (!profile) {
@@ -52,9 +52,6 @@ export const getPsychologistProfiles = async (
         const mappedSpecs = (filters.specializations as string[])
           .map((s) => specializationEnumToMn[s] || s);
         query.specializations = { $in: mappedSpecs };
-      }
-      if (filters.languages && Array.isArray(filters.languages) && filters.languages.length > 0) {
-        query.languages = { $in: filters.languages };
       }
       if (filters.minExperience) {
         query.experience = { $gte: filters.minExperience };

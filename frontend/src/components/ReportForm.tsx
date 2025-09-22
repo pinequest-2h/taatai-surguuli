@@ -97,7 +97,7 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
             onChange={(e) => setSchool(e.target.value)}
             placeholder="Жишээ нь: 23-р сургууль"
             className="w-full px-3 py-2 border border-gray-300 rounded-md 
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
             required
             disabled={isSubmitting}
           />
@@ -120,7 +120,7 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
               validateClass(e.target.value);
             }}
             placeholder="Жишээ нь: 5А, 11Б"
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none 
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none text-gray-900
               focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                 classError ? "border-red-500" : "border-gray-300"
               }`}
@@ -145,7 +145,7 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Та ямар асуудалтай тулгарч байгаагаа дэлгэрэнгүй бичнэ үү..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md 
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
               resize-vertical min-h-[120px]"
             required

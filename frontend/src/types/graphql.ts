@@ -29,7 +29,6 @@ export interface PsychologistProfile {
   experience: number;
   education: string[];
   certifications: string[];
-  languages: string[];
   hourlyRate: number;
   availability: string;
   bio: string;

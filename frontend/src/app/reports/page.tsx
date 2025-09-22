@@ -110,12 +110,7 @@ export default function ReportsPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 Миний Илгээсэн Тайлангууд
               </h2>
-              <p className="text-gray-600 mb-6 text-sm">
-                Доорх жагсаалтаас өөрийн өмнө илгээсэн бүх тайлангаа харах
-                боломжтой. Таны тайлангийн{" "}
-                <span className="font-semibold">статус</span>-г манай баг
-                шинэчилж оруулдаг.
-              </p>
+             
               <ReportList canEdit={false} onStatusUpdate={handleStatusUpdate} />
             </div>
           </div>
