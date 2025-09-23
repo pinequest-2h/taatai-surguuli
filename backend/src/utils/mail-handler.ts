@@ -23,18 +23,26 @@ const transporter = isEmailConfigured ? nodemailer.createTransport({
     pass: process.env.SMTP_PASS,
   },
   tls: {
-    rejectUnauthorized: false // For development only
+    rejectUnauthorized: false, // For development only
+    ciphers: 'SSLv3',
+    secureProtocol: 'TLSv1_2_method'
   },
-  // Connection timeout settings
-  connectionTimeout: 60000, // 60 seconds
-  greetingTimeout: 30000,   // 30 seconds
-  socketTimeout: 60000,     // 60 seconds
-
+  // Enhanced connection timeout settings for deployment
+  connectionTimeout: 30000, // 30 seconds (reduced from 60)
+  greetingTimeout: 15000,   // 15 seconds (reduced from 30)
+  socketTimeout: 30000,     // 30 seconds (reduced from 60)
+  
+  // Connection pool settings optimized for deployment
   pool: true,
-  maxConnections: 5,
-  maxMessages: 100,
-  rateDelta: 20000, // 20 seconds
-  rateLimit: 5, // max 5 messages per rateDelta
+  maxConnections: 2, // Reduced for better stability
+  maxMessages: 10,   // Reduced for better stability
+  rateDelta: 30000,  // 30 seconds
+  rateLimit: 3,      // max 3 messages per rateDelta
+  
+  // Additional deployment-friendly settings
+  requireTLS: true,
+  debug: process.env.NODE_ENV === 'development',
+  logger: process.env.NODE_ENV === 'development'
 }) : null;
 
 // Simple email queue for better performance
@@ -77,6 +85,13 @@ const sendEmailWithRetry = async (mailOptions: Record<string, unknown>, maxRetri
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`📧 Attempting to send email (attempt ${attempt}/${maxRetries})`);
+      
+      // Verify connection before sending
+      if (attempt === 1) {
+        await transporter!.verify();
+        console.log(`✅ SMTP connection verified`);
+      }
+      
       await transporter!.sendMail(mailOptions);
       console.log(`✅ Email sent successfully on attempt ${attempt}`);
       return;
@@ -84,23 +99,27 @@ const sendEmailWithRetry = async (mailOptions: Record<string, unknown>, maxRetri
       lastError = error;
       console.warn(`⚠️ Email send attempt ${attempt} failed:`, error);
       
-      // Don't retry on authentication errors
+      // Don't retry on authentication errors or permanent failures
       if (error && typeof error === 'object') {
         const err = error as Record<string, unknown>;
-        if (err.code === 'EAUTH' || err.responseCode === 535) {
+        if (err.code === 'EAUTH' || err.responseCode === 535 || err.code === 'EENVELOPE') {
+          console.error(`❌ Permanent email error, not retrying:`, err.code);
           throw error;
         }
       }
       
-      // Wait before retrying (exponential backoff)
+      // Wait before retrying (exponential backoff with jitter)
       if (attempt < maxRetries) {
-        const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
-        console.log(`⏳ Waiting ${delay}ms before retry...`);
+        const baseDelay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+        const jitter = Math.random() * 1000; // Add up to 1s of jitter
+        const delay = baseDelay + jitter;
+        console.log(`⏳ Waiting ${Math.round(delay)}ms before retry...`);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
   }
   
+  console.error(`❌ All ${maxRetries} email attempts failed`);
   throw lastError;
 };
 
