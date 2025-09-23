@@ -1,7 +1,7 @@
 // Database optimization script
 // Run this with: node optimize-database.js
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // User schema (simplified version)
 const userSchema = new mongoose.Schema({
