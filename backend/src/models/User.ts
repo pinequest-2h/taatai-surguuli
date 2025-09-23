@@ -23,7 +23,7 @@ const userSchema = new Schema<IUser>(
   {
     fullName: { type: String, required: true },
     userName: { type: String, required: true, unique: true },
-    email: { type: String },
+    email: { type: String, unique: true, sparse: true },
     phoneNumber: { type: String },
     password: { type: String, required: true },
     profileImage: { type: String },
