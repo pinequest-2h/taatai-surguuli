@@ -101,14 +101,32 @@ function addCorsHeaders(response: Response, origin: string | null): Response {
 
 
 export async function GET(request: NextRequest) {
+  const startTime = Date.now();
   const response = await handler(request);
+  const duration = Date.now() - startTime;
+  
+  // Log performance metrics
+  console.log(`⏱️ GET request completed in ${duration}ms`);
+  if (duration > 1000) {
+    console.warn(`🐌 Slow GET request detected: ${duration}ms`);
+  }
+  
   const origin = request.headers.get('origin');
   return addCorsHeaders(response, origin);
 }
 
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
   const response = await handler(request);
+  const duration = Date.now() - startTime;
+  
+  // Log performance metrics
+  console.log(`⏱️ POST request completed in ${duration}ms`);
+  if (duration > 1000) {
+    console.warn(`🐌 Slow POST request detected: ${duration}ms`);
+  }
+  
   const origin = request.headers.get('origin');
   return addCorsHeaders(response, origin);
 }
