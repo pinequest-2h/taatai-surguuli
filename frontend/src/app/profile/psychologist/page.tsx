@@ -192,7 +192,7 @@ const PsychologistProfilePage = () => {
       
       // Show success message
       if (!profile) {
-        // Profile was just created
+        
         alert('🎉 Congratulations! Your professional profile has been created successfully! You can now start accepting clients.');
       } else {
         // Profile was updated
