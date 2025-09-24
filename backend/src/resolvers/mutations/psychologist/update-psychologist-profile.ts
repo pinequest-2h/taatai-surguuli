@@ -1,6 +1,12 @@
 import { PsychologistProfile } from "@/models/PsychologistProfile";
 import { GraphQLError } from "graphql";
 
+interface WorkingHours {
+  isAvailable: boolean;
+  startTime?: string;
+  endTime?: string;
+}
+
 interface UpdatePsychologistProfileInput {
   specializations?: string[];
   experience?: number;
@@ -11,7 +17,7 @@ interface UpdatePsychologistProfileInput {
   profileImage?: string;
   coverImage?: string;
   isAcceptingNewClients?: boolean;
-  workingHours?: any;
+  workingHours?: Record<string, WorkingHours>;
 }
 
 export const updatePsychologistProfile = async (
