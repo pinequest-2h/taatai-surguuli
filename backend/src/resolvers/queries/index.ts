@@ -1,5 +1,5 @@
 import { getPsychologists, getPsychologistById, searchPsychologists } from "./psychologist/get-psychologists";
-import { getPsychologistProfile, getPsychologistProfiles, getAvailablePsychologists } from "./psychologist/get-psychologist-profile";
+import { getPsychologistProfile, getPsychologistProfileByUserId, getPsychologistProfiles, getAvailablePsychologists } from "./psychologist/get-psychologist-profile";
 import { getUserById } from "./user/get-user-by-id";
 import { getChatrooms, getChatroomById, getChatroomMessages, getOrCreateChatroom } from "./chatroom/get-chatrooms";
 import { getReports } from "./report/get-reports";
@@ -14,6 +14,7 @@ export const Query = {
   getPsychologistById,
   searchPsychologists,
   getPsychologistProfile,
+  getPsychologistProfileByUserId,
   getPsychologistProfiles,
   getAvailablePsychologists,
   getChatrooms,

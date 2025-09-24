@@ -1,51 +1,37 @@
 import nodemailer from 'nodemailer';
 
-// Check if email is properly configured
 const isEmailConfigured = process.env.SMTP_USER && process.env.SMTP_PASS;
 
 
 if (!isEmailConfigured) {
-  console.log('⚠️ Email not configured - Missing SMTP_USER or SMTP_PASS environment variables');
-  console.log('📧 To enable email functionality, create a .env.local file with:');
-  console.log('   SMTP_USER=your-email@gmail.com');
-  console.log('   SMTP_PASS=your-16-character-app-password');
-  console.log('   SMTP_HOST=smtp.gmail.com');
-  console.log('   SMTP_PORT=587');
-  console.log('   SMTP_FROM=your-email@gmail.com');
 }
 
 const transporter = isEmailConfigured ? nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true for 465, false for other ports
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
   tls: {
-    rejectUnauthorized: false, // For development only
     ciphers: 'SSLv3',
     secureProtocol: 'TLSv1_2_method'
   },
-  // Enhanced connection timeout settings for deployment
   connectionTimeout: 30000, // 30 seconds (reduced from 60)
   greetingTimeout: 15000,   // 15 seconds (reduced from 30)
   socketTimeout: 30000,     // 30 seconds (reduced from 60)
   
-  // Connection pool settings optimized for deployment
   pool: true,
   maxConnections: 2, // Reduced for better stability
   maxMessages: 10,   // Reduced for better stability
   rateDelta: 30000,  // 30 seconds
   rateLimit: 3,      // max 3 messages per rateDelta
   
-  // Additional deployment-friendly settings
   requireTLS: true,
   debug: process.env.NODE_ENV === 'development',
   logger: process.env.NODE_ENV === 'development'
 }) : null;
 
-// Simple email queue for better performance
 class EmailQueue {
   private queue: Array<{email: string, otp: string, type: 'otp' | 'verification', mailOptions: Record<string, unknown>}> = [];
   private processing = false;
@@ -55,7 +41,6 @@ class EmailQueue {
     if (!this.processing) {
       this.processQueue();
     }
-    console.log(`📧 Email queued for ${email} (${type})`);
   }
 
   private async processQueue() {
@@ -65,11 +50,8 @@ class EmailQueue {
       if (item) {
         try {
           await sendEmailWithRetry(item.mailOptions);
-          console.log(`✅ Queued email sent to ${item.email}`);
-        } catch (error) {
-          console.error(`❌ Failed to send queued email to ${item.email}:`, error);
+        } catch {
         }
-        // Small delay between emails to prevent rate limiting
         await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
@@ -84,26 +66,21 @@ const sendEmailWithRetry = async (mailOptions: Record<string, unknown>, maxRetri
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`📧 Attempting to send email (attempt ${attempt}/${maxRetries})`);
       
       // Verify connection before sending
       if (attempt === 1) {
         await transporter!.verify();
-        console.log(`✅ SMTP connection verified`);
       }
       
       await transporter!.sendMail(mailOptions);
-      console.log(`✅ Email sent successfully on attempt ${attempt}`);
       return;
     } catch (error) {
       lastError = error;
-      console.warn(`⚠️ Email send attempt ${attempt} failed:`, error);
       
       // Don't retry on authentication errors or permanent failures
       if (error && typeof error === 'object') {
         const err = error as Record<string, unknown>;
         if (err.code === 'EAUTH' || err.responseCode === 535 || err.code === 'EENVELOPE') {
-          console.error(`❌ Permanent email error, not retrying:`, err.code);
           throw error;
         }
       }
@@ -113,20 +90,16 @@ const sendEmailWithRetry = async (mailOptions: Record<string, unknown>, maxRetri
         const baseDelay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
         const jitter = Math.random() * 1000; // Add up to 1s of jitter
         const delay = baseDelay + jitter;
-        console.log(`⏳ Waiting ${Math.round(delay)}ms before retry...`);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
   }
   
-  console.error(`❌ All ${maxRetries} email attempts failed`);
   throw lastError;
 };
 
 export const sendOTPEmail = async (email: string, otp: string): Promise<void> => {
-  // Skip email sending if not configured
   if (!isEmailConfigured) {
-    console.log(`⚠️ Email not configured - OTP for ${email}: ${otp}`);
     return;
   }
 
@@ -165,15 +138,11 @@ export const sendOTPEmail = async (email: string, otp: string): Promise<void> =>
     `,
   };
 
-  // Queue email for async processing - non-blocking
   await emailQueue.add(email, otp, 'otp', mailOptions);
-  console.log(`OTP email queued for ${email}`);
 };
 
 export const sendVerificationEmail = async (email: string, otp: string): Promise<void> => {
-  // Skip email sending if not configured
   if (!isEmailConfigured) {
-    console.log(`⚠️ Email not configured - Verification OTP for ${email}: ${otp}`);
     return;
   }
 
@@ -212,7 +181,5 @@ export const sendVerificationEmail = async (email: string, otp: string): Promise
     `,
   };
 
-  // Queue email for async processing - non-blocking
   await emailQueue.add(email, otp, 'verification', mailOptions);
-  console.log(`Verification email queued for ${email}`);
 };

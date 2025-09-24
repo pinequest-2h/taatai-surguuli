@@ -44,10 +44,11 @@ const SignInPage = () => {
       if (data?.loginUser) {
         login(data.loginUser.user, data.loginUser.token);
         
-        // Show role-specific success message
+        
+        
         if (data.loginUser.user.role === 'PSYCHOLOGIST') {
-          setError(''); // Clear any previous errors
-          // You could add a success message here if needed
+          setError(''); 
+          
         }
         
         router.push('/dashboard');
@@ -69,7 +70,7 @@ const SignInPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Header */}
+        
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-full">
@@ -84,7 +85,7 @@ const SignInPage = () => {
           </p>
         </div>
 
-        {/* Sign In Form */}
+        
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (

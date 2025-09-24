@@ -16,11 +16,18 @@ interface UpdatePsychologistProfileInput {
 
 export const updatePsychologistProfile = async (
   _parent: unknown,
-  { _id, input }: { _id: string; input: UpdatePsychologistProfileInput }
+  { input }: { input: UpdatePsychologistProfileInput },
+  context: { userId?: string }
 ) => {
   try {
+    if (!context.userId) {
+      throw new GraphQLError("Authentication required", {
+        extensions: { code: "AUTHENTICATION_REQUIRED" },
+      });
+    }
+
     // Find the psychologist profile by user ID
-    const existingProfile = await PsychologistProfile.findOne({ user: _id });
+    const existingProfile = await PsychologistProfile.findOne({ user: context.userId });
     if (!existingProfile) {
       throw new GraphQLError("Psychologist profile not found", {
         extensions: { code: "PROFILE_NOT_FOUND" },

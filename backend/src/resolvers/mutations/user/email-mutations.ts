@@ -5,7 +5,6 @@ import { storeVerificationOTP, otpStorage as verificationOTPStorage } from "@/ut
 import { encryptHash } from "@/utils/hash";
 import { sendVerificationEmail as sendVerificationEmailHandler } from "@/utils/mail-handler";
 
-// Define input types inline since they're not exported from generated types
 interface ForgotPasswordInput {
   identifier: string;
 }
@@ -20,7 +19,6 @@ interface SendVerificationEmailInput {
   email: string;
 }
 
-// OTP storage functions for password reset
 const passwordResetOTPStorage = new Map<string, { otp: string; expiresAt: number }>();
 
 const storeOTP = (identifier: string, otp: string) => {
@@ -57,7 +55,6 @@ const clearOTP = (identifier: string) => {
   passwordResetOTPStorage.delete(key);
 };
 
-// Verification OTP storage functions
 const getStoredVerificationOTP = (email: string): string | null => {
   const key = `verification_${email.toLowerCase().trim()}`;
   const stored = verificationOTPStorage.get(key);
@@ -83,7 +80,6 @@ export const forgotPassword = async (
   { input }: { input: ForgotPasswordInput }
 ): Promise<boolean> => {
   try {
-    console.log("🔄 ForgotPassword called with:", input);
     
     const { identifier } = input;
 
@@ -92,14 +88,12 @@ export const forgotPassword = async (
     });
 
     if (!user) {
-      console.log("❌ User not found with identifier:", identifier);
       throw new GraphQLError("User not found", {
         extensions: { code: "USER_NOT_FOUND" },
       });
     }
 
     if (!user.email) {
-      console.log("❌ User has no email address:", user._id);
       throw new GraphQLError("User does not have an email address to send OTP", {
         extensions: { code: "EMAIL_NOT_FOUND" },
       });
@@ -109,10 +103,8 @@ export const forgotPassword = async (
     storeOTP(user.email, otp);
     await sendOTPEmail(user.email, otp);
 
-    console.log("✅ Password reset OTP sent successfully to:", user.email);
     return true;
   } catch (error: unknown) {
-    console.error("❌ ForgotPassword Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
@@ -127,7 +119,6 @@ export const resetPassword = async (
   { input }: { input: ResetPasswordInput }
 ): Promise<boolean> => {
   try {
-    console.log("🔄 ResetPassword called with:", input);
     
     const { identifier, otp, newPassword } = input;
 
@@ -136,14 +127,12 @@ export const resetPassword = async (
     });
 
     if (!user) {
-      console.log("❌ User not found with identifier:", identifier);
       throw new GraphQLError("User not found", {
         extensions: { code: "USER_NOT_FOUND" },
       });
     }
 
     if (!user.email) {
-      console.log("❌ User has no email address:", user._id);
       throw new GraphQLError("User does not have an email address", {
         extensions: { code: "EMAIL_NOT_FOUND" },
       });
@@ -151,7 +140,6 @@ export const resetPassword = async (
 
     const storedOTP = getStoredOTP(user.email);
     if (!storedOTP || storedOTP !== otp) {
-      console.log("❌ Invalid OTP for user:", user.email);
       throw new GraphQLError("Invalid or expired OTP", {
         extensions: { code: "INVALID_OTP" },
       });
@@ -162,10 +150,8 @@ export const resetPassword = async (
     
     clearOTP(user.email);
 
-    console.log("✅ Password reset successfully for user:", user._id);
     return true;
   } catch (error: unknown) {
-    console.error("❌ ResetPassword Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
@@ -180,21 +166,18 @@ export const verifyOTP = async (
   { identifier, otp }: { identifier: string; otp: string }
 ): Promise<boolean> => {
   try {
-    console.log("🔄 VerifyOTP called with:", { identifier, otp });
     
     const user = await User.findOne({
       $or: [{ email: identifier }, { userName: identifier }],
     });
 
     if (!user) {
-      console.log("❌ User not found with identifier:", identifier);
       throw new GraphQLError("User not found", {
         extensions: { code: "USER_NOT_FOUND" },
       });
     }
 
     if (!user.email) {
-      console.log("❌ User has no email address:", user._id);
       throw new GraphQLError("User does not have an email address", {
         extensions: { code: "EMAIL_NOT_FOUND" },
       });
@@ -202,17 +185,14 @@ export const verifyOTP = async (
 
     const storedOTP = getStoredOTP(user.email);
     if (!storedOTP || storedOTP !== otp) {
-      console.log("❌ Invalid OTP for user:", user.email);
       throw new GraphQLError("Invalid or expired OTP", {
         extensions: { code: "INVALID_OTP" },
       });
     }
 
     clearOTP(user.email);
-    console.log("✅ OTP verified successfully for user:", user._id);
     return true;
   } catch (error: unknown) {
-    console.error("❌ VerifyOTP Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
@@ -227,21 +207,18 @@ export const sendVerificationEmail = async (
   { input }: { input: SendVerificationEmailInput }
 ): Promise<boolean> => {
   try {
-    console.log("🔄 SendVerificationEmail called with:", input);
     
     const { email } = input;
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      console.log("❌ User not found with email:", email);
       throw new GraphQLError("User not found", {
         extensions: { code: "USER_NOT_FOUND" },
       });
     }
 
     if (user.isEmailVerified) {
-      console.log("❌ Email already verified for user:", user._id);
       throw new GraphQLError("Email is already verified", {
         extensions: { code: "EMAIL_ALREADY_VERIFIED" },
       });
@@ -251,10 +228,8 @@ export const sendVerificationEmail = async (
     storeVerificationOTP(email, otp);
     await sendVerificationEmailHandler(email, otp);
 
-    console.log("✅ Verification email sent successfully to:", email);
     return true;
   } catch (error: unknown) {
-    console.error("❌ SendVerificationEmail Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
@@ -269,12 +244,10 @@ export const verifyEmailOTP = async (
   { email, otp }: { email: string; otp: string }
 ): Promise<boolean> => {
   try {
-    console.log("🔄 VerifyEmailOTP called with:", { email, otp });
     
     const user = await User.findOne({ email });
 
     if (!user) {
-      console.log("❌ User not found with email:", email);
       throw new GraphQLError("User not found", {
         extensions: { code: "USER_NOT_FOUND" },
       });
@@ -282,7 +255,6 @@ export const verifyEmailOTP = async (
 
     const storedOTP = getStoredVerificationOTP(email);
     if (!storedOTP || storedOTP !== otp) {
-      console.log("❌ Invalid verification OTP for email:", email);
       throw new GraphQLError("Invalid or expired verification code", {
         extensions: { code: "INVALID_VERIFICATION_OTP" },
       });
@@ -291,10 +263,8 @@ export const verifyEmailOTP = async (
     await User.findByIdAndUpdate(user._id, { isEmailVerified: true });
     clearVerificationOTP(email);
 
-    console.log("✅ Email verified successfully for user:", user._id);
     return true;
   } catch (error: unknown) {
-    console.error("❌ VerifyEmailOTP Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
@@ -308,7 +278,6 @@ export const otpStorage = async (
   _parent: unknown,
   { input }: { input: { action: string; data?: unknown } }
 ): Promise<{ message: string; data?: unknown }> => {
-  // This is a utility mutation for debugging/managing OTP storage
   try {
     switch (input.action) {
       case 'clear':

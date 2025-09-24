@@ -32,7 +32,6 @@ const SignUpPage = () => {
 
 
   React.useEffect(() => {
-    console.log('formData.role changed to:', formData.role);
   }, [formData.role]);
   const [createUser] = useMutation<CreateUserResponse>(CREATE_USER, {
     onError: (error) => {
@@ -57,7 +56,6 @@ const SignUpPage = () => {
     setIsLoading(true);
 
     try {
-      console.log('Submitting form with role:', formData.role);
       const { data } = await createUser({
         variables: {
           input: {
@@ -91,13 +89,10 @@ const SignUpPage = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    console.log('Form change:', e.target.name, e.target.value);
-    console.log('Current formData before update:', formData);
     const newFormData = {
       ...formData,
       [e.target.name]: e.target.value,
     };
-    console.log('New formData after update:', newFormData);
     setFormData(newFormData);
   };
 

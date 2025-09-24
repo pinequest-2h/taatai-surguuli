@@ -9,8 +9,7 @@ export default function ReportsPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<"submit" | "my-reports">("submit");
 
-  const handleStatusUpdate = (reportId: string, status: string) => {
-    console.log(`Updating report ${reportId} to status: ${status}`);
+  const handleStatusUpdate = (_reportId: string, _status: string) => {
   };
 
   if (!user) {

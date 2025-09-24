@@ -3,10 +3,8 @@ import { Chatroom } from "@/models/Chatroom";
 import { ChatroomMessage } from "@/models/ChatroomMessage";
 import { User } from "@/models/User";
 
-// Query resolvers
 export const getChatrooms = async (_parent: unknown, { userId }: { userId: string }) => {
   try {
-    // Verify user exists
     const user = await User.findById(userId);
     if (!user) {
       throw new GraphQLError("User not found", {
@@ -21,15 +19,26 @@ export const getChatrooms = async (_parent: unknown, { userId }: { userId: strin
       ],
       isActive: true
     })
-      .populate('child', '_id fullName userName profileImage')
-      .populate('psychologist', '_id fullName userName profileImage')
+      .populate({
+        path: 'child',
+        select: '_id fullName userName profileImage',
+      })
+      .populate({
+        path: 'psychologist', 
+        select: '_id fullName userName profileImage',
+      })
       .populate('lastMessage')
       .sort({ lastMessageAt: -1, updatedAt: -1 });
 
-    console.log(`✅ Found ${chatrooms.length} chatrooms for ${user.role} user ${userId}`);
-    return chatrooms;
+    const validChatrooms = chatrooms.filter(chatroom => {
+      if (!chatroom.child || !chatroom.psychologist) {
+        return false;
+      }
+      return true;
+    });
+
+    return validChatrooms;
   } catch (error) {
-    console.error("❌ GetChatrooms Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
@@ -42,8 +51,16 @@ export const getChatrooms = async (_parent: unknown, { userId }: { userId: strin
 export const getChatroomById = async (_parent: unknown, { _id }: { _id: string }) => {
   try {
     const chatroom = await Chatroom.findById(_id)
-      .populate('child', '_id fullName userName profileImage')
-      .populate('psychologist', '_id fullName userName profileImage')
+      .populate({
+        path: 'child',
+        select: '_id fullName userName profileImage',
+        match: { _id: { $exists: true } }
+      })
+      .populate({
+        path: 'psychologist', 
+        select: '_id fullName userName profileImage',
+        match: { _id: { $exists: true } }
+      })
       .populate('lastMessage');
 
     if (!chatroom) {
@@ -52,9 +69,14 @@ export const getChatroomById = async (_parent: unknown, { _id }: { _id: string }
       });
     }
 
+    if (!chatroom.child || !chatroom.psychologist) {
+      throw new GraphQLError("Chatroom has invalid references", {
+        extensions: { code: "CHATROOM_INVALID_REFERENCES" },
+      });
+    }
+
     return chatroom;
   } catch (error) {
-    console.error("❌ GetChatroomById Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
@@ -69,6 +91,14 @@ export const getChatroomMessages = async (
   { chatroomId, limit = 50, offset = 0 }: { chatroomId: string; limit?: number; offset?: number }
 ) => {
   try {
+    // Verify chatroom exists
+    const chatroom = await Chatroom.findById(chatroomId);
+    if (!chatroom) {
+      throw new GraphQLError("Chatroom not found", {
+        extensions: { code: "CHATROOM_NOT_FOUND" },
+      });
+    }
+
     const messages = await ChatroomMessage.find({ chatroom: chatroomId })
       .populate('sender', '_id fullName userName profileImage')
       .populate('chatroom')
@@ -76,9 +106,11 @@ export const getChatroomMessages = async (
       .limit(limit)
       .skip(offset);
 
-    return messages.reverse(); // Return in chronological order
+    return messages;
   } catch (error) {
-    console.error("❌ GetChatroomMessages Error:", error);
+    if (error instanceof GraphQLError) {
+      throw error;
+    }
     throw new GraphQLError("Failed to fetch messages", {
       extensions: { code: "GET_MESSAGES_FAILED" },
     });
@@ -90,7 +122,6 @@ export const getOrCreateChatroom = async (
   { childId, psychologistId }: { childId: string; psychologistId: string }
 ) => {
   try {
-    // Verify users exist and have correct roles
     const child = await User.findById(childId);
     const psychologist = await User.findById(psychologistId);
 
@@ -106,15 +137,21 @@ export const getOrCreateChatroom = async (
       });
     }
 
-    // Try to find existing chatroom
     let chatroom = await Chatroom.findOne({
       child: childId,
       psychologist: psychologistId
     })
-      .populate('child', '_id fullName userName profileImage')
-      .populate('psychologist', '_id fullName userName profileImage');
+      .populate({
+        path: 'child',
+        select: '_id fullName userName profileImage',
+        match: { _id: { $exists: true } }
+      })
+      .populate({
+        path: 'psychologist', 
+        select: '_id fullName userName profileImage',
+        match: { _id: { $exists: true } }
+      });
 
-    // Create new chatroom if it doesn't exist
     if (!chatroom) {
       chatroom = new Chatroom({
         child: childId,
@@ -128,14 +165,18 @@ export const getOrCreateChatroom = async (
 
       await chatroom.save();
       
-      // Populate the fields
-      await chatroom.populate('child', '_id fullName userName profileImage');
-      await chatroom.populate('psychologist', '_id fullName userName profileImage');
+      await chatroom.populate({
+        path: 'child',
+        select: '_id fullName userName profileImage'
+      });
+      await chatroom.populate({
+        path: 'psychologist',
+        select: '_id fullName userName profileImage'
+      });
     }
 
     return chatroom;
   } catch (error) {
-    console.error("❌ GetOrCreateChatroom Error:", error);
     if (error instanceof GraphQLError) {
       throw error;
     }
