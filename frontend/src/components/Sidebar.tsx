@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               href="/"
               className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             >
-              <Home className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+              <Home className="mr-3 h-5 w-5 text-black-400 group-hover:text-gray-500" />
               Нүүр хуудас
             </Link>
 
@@ -63,7 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   href="/chatrooms"
                   className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 >
-                  <MessageCircle className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+                  <MessageCircle className="mr-3 h-5 w-5 text-black-400 group-hover:text-gray-500" />
                   Зурвас
                 </Link>
 
