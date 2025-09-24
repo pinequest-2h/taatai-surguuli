@@ -140,6 +140,7 @@ export const psychologistTypeDefs = gql`
     getPsychologistById(_id: ID!): User
     searchPsychologists(keyword: String!): [User!]!
     getPsychologistProfile(_id: ID!): PsychologistProfile
+    getPsychologistProfileByUserId(userId: ID!): PsychologistProfile
     getPsychologistProfiles(filters: PsychologistFilters, limit: Int, offset: Int): PsychologistConnection!
     getAvailablePsychologists(date: Date!, time: String!, duration: Int!): [PsychologistProfile!]!
     getPsychologistStats(_id: ID!): PsychologistStats!
@@ -147,7 +148,7 @@ export const psychologistTypeDefs = gql`
 
   extend type Mutation {
     createPsychologistProfile(input: CreatePsychologistProfileInput!): PsychologistProfile!
-    updatePsychologistProfile(_id: ID!, input: UpdatePsychologistProfileInput!): PsychologistProfile!
+    updatePsychologistProfile(input: UpdatePsychologistProfileInput!): PsychologistProfile!
     updateAvailability(_id: ID!, status: AvailabilityStatus!): PsychologistProfile!
     updateWorkingHours(_id: ID!, workingHours: WorkingHoursInput!): PsychologistProfile!
     verifyPsychologist(_id: ID!): PsychologistProfile!

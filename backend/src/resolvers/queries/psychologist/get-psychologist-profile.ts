@@ -11,7 +11,6 @@ export const getPsychologistProfile = async (
       .populate({
         path: 'user',
         select: '_id fullName userName email profileImage role isPrivate',
-
         match: context.userId ? {} : { isPrivate: { $ne: true } }
       });
 
@@ -20,10 +19,44 @@ export const getPsychologistProfile = async (
     }
 
     return profile.toObject();
-  } catch (error: unknown) {
-    console.error("❌ GetPsychologistProfile Error:", error);
+  } catch {
     throw new GraphQLError("Failed to fetch psychologist profile", {
       extensions: { code: "FETCH_PROFILE_FAILED" },
+    });
+  }
+};
+
+export const getPsychologistProfileByUserId = async (
+  _parent: unknown,
+  { userId }: { userId: string },
+  context: { userId?: string }
+) => {
+  try {
+    
+    // If user is requesting their own profile, allow it regardless of isPrivate
+    const isOwnProfile = context.userId === userId;
+    
+    const profile = await PsychologistProfile.findOne({ user: userId })
+      .populate({
+        path: 'user',
+        select: '_id fullName userName email profileImage role isPrivate',
+        // Allow access to own profile even if private, or if user is authenticated and profile is not private
+        match: isOwnProfile ? {} : (context.userId ? {} : { isPrivate: { $ne: true } })
+      });
+
+    if (!profile) {
+      return null;
+    }
+
+    if (!profile.user) {
+      return null;
+    }
+
+    
+    return profile.toObject();
+  } catch {
+    throw new GraphQLError("Failed to fetch psychologist profile by user ID", {
+      extensions: { code: "FETCH_PROFILE_BY_USER_ID_FAILED" },
     });
   }
 };
@@ -103,8 +136,7 @@ export const getPsychologistProfiles = async (
       },
       totalCount,
     };
-  } catch (error: unknown) {
-    console.error("❌ GetPsychologistProfiles Error:", error);
+  } catch {
     throw new GraphQLError("Failed to fetch psychologist profiles", {
       extensions: { code: "FETCH_PROFILES_FAILED" },
     });
@@ -131,8 +163,7 @@ export const getAvailablePsychologists = async (
     const filteredProfiles = profiles.filter(profile => profile.user);
 
     return filteredProfiles.map(profile => profile.toObject());
-  } catch (error: unknown) {
-    console.error("❌ GetAvailablePsychologists Error:", error);
+  } catch {
     throw new GraphQLError("Failed to fetch available psychologists", {
       extensions: { code: "FETCH_AVAILABLE_PSYCHOLOGISTS_FAILED" },
     });

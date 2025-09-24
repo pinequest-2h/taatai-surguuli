@@ -43,7 +43,7 @@ const handleJWTError = (error: unknown): never => {
 
 export const verifyToken = async (token: string): Promise<JWTPayload> => {
   try {
-    // ✅ Call getJwtSecret() only when this function is used
+
     const JWT_SECRET = getJwtSecret();
     const decoded = jwt.verify(token, JWT_SECRET, {
       algorithms: ['HS256'],
@@ -157,6 +157,6 @@ export const signToken = (payload: JWTPayload, options?: jwt.SignOptions): strin
 export const generateToken = (payload: { userId: string }): string => {
   const JWT_SECRET = getJwtSecret();
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: '7d', // Token expires in 7 days
+    expiresIn: '7d',
   });
 };

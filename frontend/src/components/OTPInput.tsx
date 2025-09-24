@@ -29,7 +29,7 @@ const OTPInput: React.FC<OTPInputProps> = ({
       setOtp(value);
       setIsComplete(value.length === length);
     }
-  }, [value, length]);
+  }, [value, length, otp]);
 
   // Notify parent when OTP changes
   useEffect(() => {

@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack -p 4000",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "optimize:db": "node add-indexes.js",
+    "optimize:deployment": "node optimize-deployment.js",
+    "postbuild": "echo \"✅ Build completed successfully\""
   },
   "dependencies": {
     "@apollo/server": "^5.0.0",
@@ -14,6 +17,8 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^3.0.2",
+    "dataloader": "^2.2.3",
+    "dotenv": "^16.6.1",
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2",

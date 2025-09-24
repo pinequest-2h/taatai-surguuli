@@ -128,6 +128,74 @@ export const GET_PSYCHOLOGIST_PROFILE = gql`
   }
 `;
 
+export const GET_PSYCHOLOGIST_PROFILE_BY_USER_ID = gql`
+  query GetPsychologistProfileByUserId($userId: ID!) {
+    getPsychologistProfileByUserId(userId: $userId) {
+      _id
+      user {
+        _id
+        fullName
+        userName
+        email
+        profileImage
+      }
+      specializations
+      experience
+      education
+      certifications
+      hourlyRate
+      availability
+      bio
+      profileImage
+      coverImage
+      isVerified
+      isAcceptingNewClients
+      averageRating
+      totalSessions
+      totalClients
+      workingHours {
+        monday {
+          isAvailable
+          startTime
+          endTime
+        }
+        tuesday {
+          isAvailable
+          startTime
+          endTime
+        }
+        wednesday {
+          isAvailable
+          startTime
+          endTime
+        }
+        thursday {
+          isAvailable
+          startTime
+          endTime
+        }
+        friday {
+          isAvailable
+          startTime
+          endTime
+        }
+        saturday {
+          isAvailable
+          startTime
+          endTime
+        }
+        sunday {
+          isAvailable
+          startTime
+          endTime
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const GET_PSYCHOLOGIST_PROFILES = gql`
   query GetPsychologistProfiles($filters: PsychologistFilters, $limit: Int, $offset: Int) {
     getPsychologistProfiles(filters: $filters, limit: $limit, offset: $offset) {

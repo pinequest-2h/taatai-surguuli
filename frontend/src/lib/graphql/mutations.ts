@@ -130,8 +130,8 @@ export const CREATE_PSYCHOLOGIST_PROFILE = gql`
 `;
 
 export const UPDATE_PSYCHOLOGIST_PROFILE = gql`
-  mutation UpdatePsychologistProfile($_id: ID!, $input: UpdatePsychologistProfileInput!) {
-    updatePsychologistProfile(_id: $_id, input: $input) {
+  mutation UpdatePsychologistProfile($input: UpdatePsychologistProfileInput!) {
+    updatePsychologistProfile(input: $input) {
       _id
       specializations
       experience
